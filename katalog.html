@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Katalog sapi premium suaimi livestock untuk kebutuhan kurban dan bisnis.">
+	<meta name="theme-color" content="#9c4f2f">
+	<title>Katalog Suaimi Livestock</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700;9..144,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--background: #f6f1e9;
+			--surface: #fffaf0;
+			--foreground: #18130f;
+			--primary: #9c4f2f;
+			--primary-dark: #6f3420;
+			--muted: #e8dfd3;
+			--muted-foreground: #6b6258;
+			--border: rgba(24, 19, 15, 0.14);
+		}
+
+		* { box-sizing: border-box; }
+		html { scroll-behavior: smooth; }
+		body {
+			margin: 0;
+			background: var(--background);
+			color: var(--foreground);
+			font-family: "Hanken Grotesk", Arial, sans-serif;
+		}
+
+		img, svg { display: block; max-width: 100%; }
+		a { color: inherit; text-decoration: none; }
+		button { font: inherit; }
+
+		.font-display { font-family: "Fraunces", Georgia, serif; }
+		.page-shell { min-height: 100vh; background: var(--background); }
+		.container { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+
+		.navbar {
+			position: sticky;
+			top: 0;
+			z-index: 50;
+			background: rgba(246, 241, 233, .92);
+			border-bottom: 1px solid var(--border);
+			backdrop-filter: blur(12px);
+		}
+
+		.nav-inner {
+			height: 76px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 28px;
+		}
+
+		.brand {
+			font-family: "Fraunces", Georgia, serif;
+			font-size: 28px;
+			font-weight: 800;
+			letter-spacing: 0;
+		}
+
+		.brand span { color: var(--primary); }
+
+		.nav-links {
+			display: flex;
+			align-items: center;
+			gap: 32px;
+			color: var(--muted-foreground);
+			font-size: 13px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: .04em;
+		}
+
+		.nav-links a:hover,
+		.nav-links a[aria-current="page"] { color: var(--foreground); }
+
+.menu-button {
+display: none;
+align-items: center;
+justify-content: center;
+width: 42px;
+height: 42px;
+color: var(--foreground);
+background: transparent;
+border: 0;
+cursor: pointer;
+}
+
+.hidden { display: none; }
+.menu-button svg { width: 24px; height: 24px; }
+.mobile-menu { display: none; border-top: 1px solid var(--border); background: rgba(246, 241, 233, .98); }
+.mobile-menu:not(.hidden) { display: block; }
+.mobile-menu-inner { display: flex; flex-direction: column; gap: 14px; padding: 18px 0 22px; }
+.mobile-menu a { color: var(--foreground); font-size: 15px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.mobile-menu .nav-cta { width: 100%; margin-top: 2px; }
+
+		.nav-cta,
+		.primary-button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			background: var(--primary);
+			color: var(--surface);
+			border: 1px solid var(--primary);
+			border-radius: 2px;
+			font-size: 13px;
+			font-weight: 800;
+			letter-spacing: .04em;
+			text-transform: uppercase;
+			transition: background .25s ease, border-color .25s ease, transform .25s ease;
+		}
+
+		.nav-cta { padding: 10px 18px; }
+		.primary-button { padding: 14px 22px; }
+		.nav-cta:hover,
+		.primary-button:hover { background: var(--primary-dark); border-color: var(--primary-dark); transform: translateY(-1px); }
+
+		.hero {
+			padding: 86px 0 52px;
+			border-bottom: 1px solid var(--border);
+		}
+
+		.eyebrow {
+			margin: 0 0 18px;
+			color: var(--primary);
+			font-size: 12px;
+			font-weight: 800;
+			letter-spacing: .32em;
+			text-transform: uppercase;
+		}
+
+		.hero-grid {
+			display: grid;
+			grid-template-columns: minmax(0, 1.12fr) minmax(320px, .88fr);
+			gap: 48px;
+			align-items: end;
+		}
+
+		h1 {
+			margin: 0;
+			font-family: "Fraunces", Georgia, serif;
+			font-size: clamp(46px, 7vw, 96px);
+			line-height: .96;
+			letter-spacing: 0;
+		}
+
+		h1 em { font-weight: 300; }
+
+		.hero-copy {
+			margin: 0;
+			color: var(--muted-foreground);
+			font-size: 18px;
+			line-height: 1.7;
+			max-width: 560px;
+		}
+
+		.catalog-stage {
+			padding: 44px 0 84px;
+		}
+
+		.catalog-toolbar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 20px;
+			margin-bottom: 22px;
+		}
+
+		.catalog-count {
+			color: var(--muted-foreground);
+			font-size: 14px;
+			letter-spacing: .08em;
+			text-transform: uppercase;
+		}
+
+		.slide-controls { display: flex; gap: 10px; }
+
+		.icon-button {
+			width: 42px;
+			height: 42px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			border: 1px solid var(--border);
+			border-radius: 999px;
+			color: var(--foreground);
+			background: transparent;
+			cursor: pointer;
+			transition: background .25s ease, color .25s ease, border-color .25s ease;
+		}
+
+		.icon-button:hover {
+			background: var(--primary);
+			border-color: var(--primary);
+			color: var(--surface);
+		}
+
+		.slider {
+			display: grid;
+			grid-auto-flow: column;
+			grid-auto-columns: minmax(290px, 34%);
+			gap: 24px;
+			overflow-x: auto;
+			scroll-snap-type: x mandatory;
+			scroll-behavior: smooth;
+			padding: 2px 2px 18px;
+			scrollbar-width: thin;
+			scrollbar-color: var(--primary) rgba(24, 19, 15, .12);
+		}
+
+		.catalog-card {
+			scroll-snap-align: start;
+			border: 1px solid var(--border);
+			background: rgba(255, 250, 240, .52);
+			min-height: 100%;
+		}
+
+		.card-media {
+			position: relative;
+			aspect-ratio: 4 / 5;
+			overflow: hidden;
+			background: var(--muted);
+		}
+
+		.card-media img {
+			width: 100%;
+			height: 100%;
+			object-fit: contain;
+			object-position: center;
+			padding: 10px;
+		}
+
+		.badge {
+			position: absolute;
+			left: 18px;
+			top: 18px;
+			padding: 7px 10px;
+			background: var(--primary);
+			color: var(--surface);
+			border-radius: 2px;
+			font-size: 10px;
+			font-weight: 800;
+			letter-spacing: .18em;
+			text-transform: uppercase;
+		}
+
+		.card-content { padding: 22px; }
+
+		.card-top {
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			gap: 18px;
+			margin-bottom: 18px;
+		}
+
+		.card-title {
+			margin: 0 0 4px;
+			font-family: "Fraunces", Georgia, serif;
+			font-size: 25px;
+			line-height: 1.1;
+		}
+
+		.card-subtitle {
+			margin: 0;
+			color: var(--muted-foreground);
+			font-size: 14px;
+		}
+
+		.price {
+			color: var(--primary);
+			font-weight: 800;
+			white-space: nowrap;
+		}
+
+		.spec-grid {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 12px;
+			padding-top: 18px;
+			border-top: 1px solid var(--border);
+		}
+
+		.spec span {
+			display: block;
+			color: var(--muted-foreground);
+			font-size: 10px;
+			font-weight: 800;
+			letter-spacing: .18em;
+			text-transform: uppercase;
+			margin-bottom: 5px;
+		}
+
+		.spec strong {
+			font-size: 15px;
+			color: var(--foreground);
+		}
+
+		.card-actions {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 14px;
+			margin-top: 22px;
+		}
+
+		.secondary-link {
+			color: var(--foreground);
+			border-bottom: 1px solid rgba(24, 19, 15, .35);
+			font-size: 14px;
+			font-weight: 700;
+			padding-bottom: 4px;
+		}
+
+		.assurance {
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 0;
+			border-top: 1px solid var(--border);
+			border-bottom: 1px solid var(--border);
+			margin-top: 54px;
+		}
+
+		.assurance-item {
+			padding: 30px;
+			border-right: 1px solid var(--border);
+		}
+
+		.assurance-item:last-child { border-right: 0; }
+
+		.assurance-item span {
+			display: block;
+			color: rgba(156, 79, 47, .22);
+			font-family: "Fraunces", Georgia, serif;
+			font-size: 52px;
+			line-height: 1;
+			margin-bottom: 12px;
+		}
+
+		.assurance-item h2 {
+			margin: 0 0 10px;
+			font-family: "Fraunces", Georgia, serif;
+			font-size: 24px;
+		}
+
+		.assurance-item p {
+			margin: 0;
+			color: var(--muted-foreground);
+			line-height: 1.65;
+		}
+
+		footer {
+			background: var(--foreground);
+			color: var(--background);
+			padding: 46px 0;
+		}
+
+		.footer-row {
+			display: flex;
+			justify-content: space-between;
+			gap: 24px;
+			align-items: center;
+			color: rgba(246, 241, 233, .58);
+			font-size: 13px;
+		}
+
+		@media (max-width: 900px) {
+			.container { width: min(100% - 32px, 1180px); }
+			.nav-links { gap: 18px; }
+			.hero-grid { grid-template-columns: 1fr; gap: 26px; }
+			.slider { grid-auto-columns: minmax(280px, 78%); }
+			.assurance { grid-template-columns: 1fr; }
+			.assurance-item { border-right: 0; border-bottom: 1px solid var(--border); }
+			.assurance-item:last-child { border-bottom: 0; }
+		}
+
+		@media (max-width: 720px) {
+			.nav-inner { height: 68px; padding: 0; align-items: center; flex-direction: row; }
+			.nav-links { display: none; }
+			.menu-button { display: inline-flex; }
+			.hero { padding-top: 54px; }
+			.catalog-toolbar { align-items: flex-start; flex-direction: column; }
+			.slider { grid-auto-columns: 90%; }
+			.card-actions { align-items: stretch; flex-direction: column; }
+			.primary-button { width: 100%; }
+			.footer-row { align-items: flex-start; flex-direction: column; }
+		}
+	</style>
+</head>
+<body>
+	<div class="page-shell">
+		<nav class="navbar">
+<div class="container nav-inner">
+<a href="./SapiBagus%20.html" class="brand">suaimi<span>.</span></a>
+<div class="nav-links" aria-label="Navigasi utama">
+<a href="./SapiBagus%20.html">Beranda</a>
+					<a href="./tentang.html">Tentang Farm</a>
+					<a href="./katalog.html" aria-current="page">Katalog</a>
+					<a href="./kontak.html">Kontak</a>
+						<a href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20ingin%20melihat%20katalog%20sapi." target="_blank" rel="noopener noreferrer">WhatsApp Kami</a>
+</div>
+<button class="menu-button" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="mobile-menu">
+<svg class="menu-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+<svg class="menu-close hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+</button>
+</div>
+<div id="mobile-menu" class="mobile-menu hidden">
+<div class="container mobile-menu-inner">
+<a href="./SapiBagus%20.html">Beranda</a>
+					<a href="./tentang.html">Tentang Farm</a>
+					<a href="./katalog.html" aria-current="page">Katalog</a>
+					<a href="./kontak.html">Kontak</a>
+						<a class="nav-cta" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20ingin%20melihat%20katalog%20sapi." target="_blank" rel="noopener noreferrer">WhatsApp Kami</a>
+</div>
+</div>
+</nav>
+
+		<header class="hero">
+			<div class="container hero-grid">
+				<div>
+					<p class="eyebrow">Katalog Premium</p>
+					<h1>Katalog Sapi<br><em>Siap Pilih.</em></h1>
+				</div>
+				<p class="hero-copy">Pilih sapi sehat dengan data lengkap, pengawasan dokter hewan, dan opsi reservasi langsung melalui admin suaimi livestock.</p>
+			</div>
+		</header>
+
+		<main class="catalog-stage">
+			<section class="container" aria-labelledby="catalog-title">
+				<div class="catalog-toolbar">
+					<p class="catalog-count" id="catalog-title">6 sapi pilihan tersedia</p>
+					<div class="slide-controls" aria-label="Kontrol slide katalog">
+						<button class="icon-button" type="button" id="prev-slide" aria-label="Geser katalog ke kiri">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+						</button>
+						<button class="icon-button" type="button" id="next-slide" aria-label="Geser katalog ke kanan">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+						</button>
+					</div>
+				</div>
+
+				<div class="slider" id="catalog-slider" tabindex="0" aria-label="Slide katalog sapi suaimi livestock">
+					<article class="catalog-card">
+						<div class="card-media">
+							<img src="image/sapi1.jpg" alt="Black Titan, tampak samping sapi premium">
+							<span class="badge">Premium</span>
+						</div>
+						<div class="card-content">
+							<div class="card-top">
+								<div><h2 class="card-title">Black Titan</h2><p class="card-subtitle">Brahmana Cross - 480 kg</p></div>
+								<span class="price">Rp 35 Jt</span>
+							</div>
+							<div class="spec-grid">
+								<div class="spec"><span>Usia</span><strong>2.5 tahun</strong></div>
+								<div class="spec"><span>Grade</span><strong>A+</strong></div>
+								<div class="spec"><span>Status</span><strong>Ready</strong></div>
+							</div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20Black%20Titan." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi1.html">Detail</a></div>
+						</div>
+					</article>
+
+					<article class="catalog-card">
+						<div class="card-media">
+							<img src="image/sapi2.jpg" alt="Titan Brown, sapi Jersey premium">
+							<span class="badge">Best Seller</span>
+						</div>
+						<div class="card-content">
+							<div class="card-top">
+								<div><h2 class="card-title">Titan Brown</h2><p class="card-subtitle">Jersey - 520 kg</p></div>
+								<span class="price">Rp 42 Jt</span>
+							</div>
+							<div class="spec-grid">
+								<div class="spec"><span>Usia</span><strong>3 tahun</strong></div>
+								<div class="spec"><span>Grade</span><strong>A+</strong></div>
+								<div class="spec"><span>Status</span><strong>Ready</strong></div>
+							</div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20Titan%20Brown." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi2.html">Detail</a></div>
+						</div>
+					</article>
+
+					<article class="catalog-card">
+						<div class="card-media">
+							<img src="image/sapi3.jpg" alt="Arjuna Prime, sapi Jersey premium">
+						</div>
+						<div class="card-content">
+							<div class="card-top">
+								<div><h2 class="card-title">Arjuna Prime</h2><p class="card-subtitle">Jersey - 450 kg</p></div>
+								<span class="price">Rp 31 Jt</span>
+							</div>
+							<div class="spec-grid">
+								<div class="spec"><span>Usia</span><strong>2 tahun</strong></div>
+								<div class="spec"><span>Grade</span><strong>A</strong></div>
+								<div class="spec"><span>Status</span><strong>Ready</strong></div>
+							</div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20Arjuna%20Prime." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi3.html">Detail</a></div>
+						</div>
+					</article>
+
+					<article class="catalog-card">
+						<div class="card-media">
+							<img src="image/sapi4.jpg" alt="Gagak Rimang, sapi Jersey premium">
+							<span class="badge">Kurban</span>
+						</div>
+						<div class="card-content">
+							<div class="card-top">
+								<div><h2 class="card-title">Gagak Rimang</h2><p class="card-subtitle">Jersey - 430 kg</p></div>
+								<span class="price">Rp 29 Jt</span>
+							</div>
+							<div class="spec-grid">
+								<div class="spec"><span>Usia</span><strong>2.3 tahun</strong></div>
+								<div class="spec"><span>Grade</span><strong>A</strong></div>
+								<div class="spec"><span>Status</span><strong>Ready</strong></div>
+							</div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20Gagak%20Rimang." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi4.html">Detail</a></div>
+						</div>
+					</article>
+
+					<article class="catalog-card">
+						<div class="card-media">
+							<img src="image/sapi5.jpg" alt="Amanah, sapi Jersey premium">
+						</div>
+						<div class="card-content">
+							<div class="card-top">
+								<div><h2 class="card-title">Amanah</h2><p class="card-subtitle">Jersey - 465 kg</p></div>
+								<span class="price">Rp 33 Jt</span>
+							</div>
+							<div class="spec-grid">
+								<div class="spec"><span>Usia</span><strong>2.4 tahun</strong></div>
+								<div class="spec"><span>Grade</span><strong>A</strong></div>
+								<div class="spec"><span>Status</span><strong>Ready</strong></div>
+							</div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20Amanah." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi5.html">Detail</a></div>
+						</div>
+					</article>
+
+					<article class="catalog-card">
+						<div class="card-media">
+							<img src="https://media.base44.com/images/public/6a2f82bdfbc84678596af5a9/b54099843_generated_3d3b9358.png" alt="Bima Raya, sapi siap kirim dengan armada aman">
+							<span class="badge">Siap Kirim</span>
+						</div>
+						<div class="card-content">
+							<div class="card-top">
+								<div><h2 class="card-title">Bima Raya</h2><p class="card-subtitle">Brahman Cross - 500 kg</p></div>
+								<span class="price">Rp 39 Jt</span>
+							</div>
+							<div class="spec-grid">
+								<div class="spec"><span>Usia</span><strong>2.8 tahun</strong></div>
+								<div class="spec"><span>Grade</span><strong>A+</strong></div>
+								<div class="spec"><span>Status</span><strong>Ready</strong></div>
+							</div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20Bima%20Raya." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./kontak.html">Detail</a></div>
+						</div>
+					</article>
+				</div>
+
+				<div class="assurance" aria-label="Keunggulan layanan katalog">
+					<article class="assurance-item"><span>01</span><h2>Data Transparan</h2><p>Bobot, usia, vaksinasi, dan status kesehatan disajikan ringkas untuk membantu Anda memilih.</p></article>
+					<article class="assurance-item"><span>02</span><h2>Kurasi Admin</h2><p>Admin membantu menyesuaikan pilihan dengan kebutuhan kurban, aqiqah, atau pengembangan bisnis.</p></article>
+					<article class="assurance-item"><span>03</span><h2>Reservasi Cepat</h2><p>Setiap kartu katalog terhubung langsung ke WhatsApp untuk proses tanya jawab dan booking.</p></article>
+				</div>
+			</section>
+		</main>
+
+		<footer>
+			<div class="container footer-row">
+				<p>suaimi livestock. Peternakan berizin dan tersertifikasi.</p>
+				<a href="./SapiBagus%20.html">Kembali ke halaman utama</a>
+			</div>
+		</footer>
+	</div>
+
+	<script>
+		const slider = document.getElementById('catalog-slider');
+		const prevButton = document.getElementById('prev-slide');
+		const nextButton = document.getElementById('next-slide');
+
+		function slideByCard(direction) {
+			const firstCard = slider.querySelector('.catalog-card');
+			const distance = firstCard ? firstCard.getBoundingClientRect().width + 24 : 320;
+			slider.scrollBy({ left: direction * distance, behavior: 'smooth' });
+		}
+
+		prevButton.addEventListener('click', () => slideByCard(-1));
+		nextButton.addEventListener('click', () => slideByCard(1));
+	</script>
+<script>
+const menuButton = document.querySelector('.menu-button');
+const mobileMenu = document.getElementById('mobile-menu');
+const openIcon = menuButton?.querySelector('.menu-open');
+const closeIcon = menuButton?.querySelector('.menu-close');
+
+function closeMobileMenu() {
+if (!menuButton || !mobileMenu || !openIcon || !closeIcon) return;
+mobileMenu.classList.add('hidden');
+openIcon.classList.remove('hidden');
+closeIcon.classList.add('hidden');
+menuButton.setAttribute('aria-expanded', 'false');
+}
+
+menuButton?.addEventListener('click', () => {
+const isOpen = mobileMenu.classList.toggle('hidden') === false;
+openIcon.classList.toggle('hidden', isOpen);
+closeIcon.classList.toggle('hidden', !isOpen);
+menuButton.setAttribute('aria-expanded', String(isOpen));
+});
+
+mobileMenu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMobileMenu));
+</script></body>
+</html>

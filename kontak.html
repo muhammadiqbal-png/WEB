@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Kontak suaimi livestock untuk konsultasi sapi kurban, bisnis, dan reservasi katalog.">
+	<meta name="theme-color" content="#9c4f2f">
+	<title>Kontak Suaimi Livestock</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700;9..144,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--background: #f6f1e9;
+			--surface: #fffaf0;
+			--foreground: #18130f;
+			--primary: #9c4f2f;
+			--primary-dark: #6f3420;
+			--muted: #e8dfd3;
+			--muted-foreground: #6b6258;
+			--border: rgba(24, 19, 15, 0.14);
+		}
+
+		* { box-sizing: border-box; }
+		html { scroll-behavior: smooth; }
+		body {
+			margin: 0;
+			background: var(--background);
+			color: var(--foreground);
+			font-family: "Hanken Grotesk", Arial, sans-serif;
+		}
+
+		a { color: inherit; text-decoration: none; }
+		img, svg { display: block; max-width: 100%; }
+		button, input, textarea { font: inherit; }
+		.container { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+		.font-display { font-family: "Fraunces", Georgia, serif; }
+
+		.navbar {
+			position: sticky;
+			top: 0;
+			z-index: 50;
+			background: rgba(246, 241, 233, .92);
+			border-bottom: 1px solid var(--border);
+			backdrop-filter: blur(12px);
+		}
+
+		.nav-inner {
+			height: 76px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 28px;
+		}
+
+		.brand {
+			font-family: "Fraunces", Georgia, serif;
+			font-size: 28px;
+			font-weight: 800;
+		}
+
+		.brand span { color: var(--primary); }
+
+		.nav-links {
+			display: flex;
+			align-items: center;
+			gap: 32px;
+			color: var(--muted-foreground);
+			font-size: 13px;
+			font-weight: 700;
+			letter-spacing: .04em;
+			text-transform: uppercase;
+		}
+
+		.nav-links a:hover,
+		.nav-links a[aria-current="page"] { color: var(--foreground); }
+
+.menu-button {
+display: none;
+align-items: center;
+justify-content: center;
+width: 42px;
+height: 42px;
+color: var(--foreground);
+background: transparent;
+border: 0;
+cursor: pointer;
+}
+
+.hidden { display: none; }
+.menu-button svg { width: 24px; height: 24px; }
+.mobile-menu { display: none; border-top: 1px solid var(--border); background: rgba(246, 241, 233, .98); }
+.mobile-menu:not(.hidden) { display: block; }
+.mobile-menu-inner { display: flex; flex-direction: column; gap: 14px; padding: 18px 0 22px; }
+.mobile-menu a { color: var(--foreground); font-size: 15px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.mobile-menu .nav-cta { width: 100%; margin-top: 2px; }
+
+		.nav-cta,
+		.primary-button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			background: var(--primary);
+			color: var(--surface);
+			border: 1px solid var(--primary);
+			border-radius: 2px;
+			font-size: 13px;
+			font-weight: 800;
+			letter-spacing: .04em;
+			text-transform: uppercase;
+			transition: background .25s ease, border-color .25s ease, transform .25s ease;
+		}
+
+		.nav-cta { padding: 10px 18px; }
+		.primary-button { width: 100%; padding: 15px 22px; cursor: pointer; }
+		.nav-cta:hover,
+		.primary-button:hover { background: var(--primary-dark); border-color: var(--primary-dark); transform: translateY(-1px); }
+
+		.hero {
+			padding: 88px 0 58px;
+			border-bottom: 1px solid var(--border);
+		}
+
+		.hero-grid {
+			display: grid;
+			grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr);
+			gap: 54px;
+			align-items: end;
+		}
+
+		.eyebrow {
+			margin: 0 0 18px;
+			color: var(--primary);
+			font-size: 12px;
+			font-weight: 800;
+			letter-spacing: .32em;
+			text-transform: uppercase;
+		}
+
+		h1 {
+			margin: 0;
+			font-family: "Fraunces", Georgia, serif;
+			font-size: clamp(46px, 7vw, 94px);
+			line-height: .96;
+		}
+
+		h1 em { font-weight: 300; }
+
+		.hero-copy {
+			margin: 0;
+			color: var(--muted-foreground);
+			font-size: 18px;
+			line-height: 1.7;
+			max-width: 560px;
+		}
+
+		.contact-section { padding: 54px 0 92px; }
+
+		.contact-grid {
+			display: grid;
+			grid-template-columns: minmax(290px, .8fr) minmax(0, 1.2fr);
+			gap: 28px;
+			align-items: stretch;
+		}
+
+		.contact-panel,
+		.form-panel {
+			border: 1px solid var(--border);
+			background: rgba(255, 250, 240, .52);
+		}
+
+		.contact-panel { padding: 34px; }
+		.form-panel { padding: 34px; }
+
+		.panel-title {
+			margin: 0 0 12px;
+			font-family: "Fraunces", Georgia, serif;
+			font-size: 32px;
+			line-height: 1.1;
+		}
+
+		.panel-copy {
+			margin: 0 0 28px;
+			color: var(--muted-foreground);
+			line-height: 1.65;
+		}
+
+		.contact-list {
+			display: grid;
+			gap: 18px;
+			margin: 0 0 30px;
+			padding: 0;
+			list-style: none;
+		}
+
+		.contact-item {
+			padding-top: 18px;
+			border-top: 1px solid var(--border);
+		}
+
+		.contact-item span {
+			display: block;
+			margin-bottom: 6px;
+			color: var(--muted-foreground);
+			font-size: 11px;
+			font-weight: 800;
+			letter-spacing: .18em;
+			text-transform: uppercase;
+		}
+
+		.contact-item strong {
+			display: block;
+			font-size: 18px;
+			line-height: 1.35;
+		}
+
+		.quick-links {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 12px;
+		}
+
+		.quick-link {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			padding: 14px;
+			border: 1px solid var(--border);
+			color: var(--foreground);
+			font-size: 14px;
+			font-weight: 800;
+			text-transform: uppercase;
+			letter-spacing: .04em;
+			transition: border-color .25s ease, color .25s ease;
+		}
+
+		.quick-link:hover { border-color: var(--primary); color: var(--primary); }
+
+		.form-grid {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 18px;
+		}
+
+		.field { display: grid; gap: 8px; }
+		.field.full { grid-column: 1 / -1; }
+		label {
+			color: var(--muted-foreground);
+			font-size: 11px;
+			font-weight: 800;
+			letter-spacing: .18em;
+			text-transform: uppercase;
+		}
+
+		input, textarea {
+			width: 100%;
+			border: 1px solid var(--border);
+			border-radius: 2px;
+			background: rgba(246, 241, 233, .72);
+			color: var(--foreground);
+			padding: 14px 15px;
+			outline: none;
+			transition: border-color .25s ease, background .25s ease;
+		}
+
+		input:focus,
+		textarea:focus { border-color: var(--primary); background: var(--surface); }
+		textarea { min-height: 140px; resize: vertical; }
+
+		.map-band {
+			margin-top: 30px;
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) minmax(260px, .72fr);
+			border: 1px solid var(--border);
+			background: var(--foreground);
+			color: var(--background);
+		}
+
+		.map-image { min-height: 280px; overflow: hidden; }
+		.map-image img { width: 100%; height: 100%; object-fit: cover; opacity: .86; }
+		.map-content { padding: 34px; align-self: center; }
+		.map-content h2 {
+			margin: 0 0 12px;
+			font-family: "Fraunces", Georgia, serif;
+			font-size: 34px;
+			line-height: 1.1;
+		}
+		.map-content p { margin: 0; color: rgba(246, 241, 233, .68); line-height: 1.65; }
+
+		footer {
+			background: var(--foreground);
+			color: var(--background);
+			padding: 46px 0;
+		}
+
+		.footer-row {
+			display: flex;
+			justify-content: space-between;
+			gap: 24px;
+			align-items: center;
+			color: rgba(246, 241, 233, .58);
+			font-size: 13px;
+		}
+
+		@media (max-width: 900px) {
+			.container { width: min(100% - 32px, 1180px); }
+			.hero-grid,
+			.contact-grid,
+			.map-band { grid-template-columns: 1fr; }
+			.nav-links { gap: 18px; }
+			.map-image { min-height: 230px; }
+		}
+
+		@media (max-width: 720px) {
+			.nav-inner { height: 68px; padding: 0; align-items: center; flex-direction: row; }
+			.nav-links { display: none; }
+			.menu-button { display: inline-flex; }
+			.hero { padding-top: 54px; }
+			.form-grid,
+			.quick-links { grid-template-columns: 1fr; }
+			.contact-panel,
+			.form-panel,
+			.map-content { padding: 24px; }
+			.footer-row { align-items: flex-start; flex-direction: column; }
+		}
+	</style>
+</head>
+<body>
+	<div class="page-shell">
+		<nav class="navbar">
+<div class="container nav-inner">
+<a href="./SapiBagus%20.html" class="brand">suaimi<span>.</span></a>
+<div class="nav-links" aria-label="Navigasi utama">
+<a href="./SapiBagus%20.html">Beranda</a>
+					<a href="./tentang.html">Tentang Farm</a>
+					<a href="./katalog.html">Katalog</a>
+					<a href="./kontak.html" aria-current="page">Kontak</a>
+						<a class="nav-cta" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20ingin%20konsultasi." target="_blank" rel="noopener noreferrer">WhatsApp Kami</a>
+</div>
+<button class="menu-button" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="mobile-menu">
+<svg class="menu-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+<svg class="menu-close hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+</button>
+</div>
+<div id="mobile-menu" class="mobile-menu hidden">
+<div class="container mobile-menu-inner">
+<a href="./SapiBagus%20.html">Beranda</a>
+					<a href="./tentang.html">Tentang Farm</a>
+					<a href="./katalog.html">Katalog</a>
+					<a href="./kontak.html" aria-current="page">Kontak</a>
+						<a class="nav-cta" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20ingin%20konsultasi." target="_blank" rel="noopener noreferrer">WhatsApp Kami</a>
+</div>
+</div>
+</nav>
+
+		<header class="hero">
+			<div class="container hero-grid">
+				<div>
+						<p class="eyebrow">Kontak suaimi</p>
+					<h1>Konsultasi<br><em>Tanpa Ribet.</em></h1>
+				</div>
+				<p class="hero-copy">Diskusikan kebutuhan sapi kurban, aqiqah, maupun bisnis ternak langsung dengan admin. Kami bantu pilihkan unit yang sesuai anggaran, bobot, dan jadwal pengiriman Anda.</p>
+			</div>
+		</header>
+
+		<main class="contact-section">
+			<section class="container" aria-label="Informasi kontak suaimi livestock">
+				<div class="contact-grid">
+					<aside class="contact-panel">
+						<p class="eyebrow">Jalur Cepat</p>
+						<h2 class="panel-title">Hubungi Admin Farm.</h2>
+						<p class="panel-copy">Tim kami aktif membantu konsultasi, pengecekan stok katalog, dan penjadwalan survei atau pengiriman.</p>
+						<ul class="contact-list">
+							<li class="contact-item"><span>WhatsApp</span><strong>083180719216</strong></li>
+							<li class="contact-item"><span>Email</span><strong>info@sapibagus.farm</strong></li>
+							<li class="contact-item"><span>Jam Layanan</span><strong>Senin-Sabtu, 08.00-17.00 WIB</strong></li>
+							<li class="contact-item"><span>Lokasi</span><strong>Samalanga, Bireuen</strong></li>
+						</ul>
+						<div class="quick-links">
+									<a class="quick-link" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20ingin%20konsultasi%20sapi." target="_blank" rel="noopener noreferrer">WhatsApp <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a>
+							<a class="quick-link" href="mailto:info@sapibagus.farm">Email <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a>
+						</div>
+					</aside>
+
+					<section class="form-panel" aria-labelledby="form-title">
+						<p class="eyebrow">Form Kontak</p>
+						<h2 class="panel-title" id="form-title">Ceritakan Kebutuhan Anda.</h2>
+						<p class="panel-copy">Isi detail singkat, lalu kirim melalui WhatsApp agar admin menerima konteks kebutuhan Anda sejak pesan pertama.</p>
+						<form id="contact-form" class="form-grid">
+							<div class="field">
+								<label for="name">Nama</label>
+								<input id="name" name="name" type="text" autocomplete="name" placeholder="Nama lengkap" required>
+							</div>
+							<div class="field">
+								<label for="phone">Nomor WhatsApp</label>
+								<input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="08xx xxxx xxxx" required>
+							</div>
+							<div class="field">
+								<label for="need">Kebutuhan</label>
+								<input id="need" name="need" type="text" placeholder="Kurban, aqiqah, bisnis ternak">
+							</div>
+							<div class="field">
+								<label for="budget">Anggaran</label>
+								<input id="budget" name="budget" type="text" placeholder="Contoh: Rp 30 juta">
+							</div>
+							<div class="field full">
+								<label for="message">Catatan</label>
+								<textarea id="message" name="message" placeholder="Tulis bobot, jumlah sapi, tanggal pengiriman, atau pertanyaan khusus."></textarea>
+							</div>
+							<div class="field full">
+								<button class="primary-button" type="submit">Kirim via WhatsApp</button>
+							</div>
+						</form>
+					</section>
+				</div>
+
+				<div class="map-band">
+					<div class="map-image">
+							<img src="image/pengeriman.webp" alt="Armada pengiriman sapi suaimi livestock">
+					</div>
+					<div class="map-content">
+						<p class="eyebrow">Distribusi Aman</p>
+						<h2>Siap kirim dari farm ke lokasi Anda.</h2>
+						<p>Admin akan membantu validasi alamat, jadwal, dan opsi pengiriman agar sapi tiba dalam kondisi prima.</p>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<footer>
+			<div class="container footer-row">
+				<p>suaimi livestock. Peternakan berizin dan tersertifikasi.</p>
+				<a href="./SapiBagus%20.html">Kembali ke halaman utama</a>
+			</div>
+		</footer>
+	</div>
+
+	<script>
+		const form = document.getElementById('contact-form');
+
+		form.addEventListener('submit', (event) => {
+			event.preventDefault();
+			const data = new FormData(form);
+			const message = [
+				'Halo suaimi livestock, saya ingin konsultasi.',
+				`Nama: ${data.get('name') || '-'}`,
+				`Nomor WhatsApp: ${data.get('phone') || '-'}`,
+				`Kebutuhan: ${data.get('need') || '-'}`,
+				`Anggaran: ${data.get('budget') || '-'}`,
+				`Catatan: ${data.get('message') || '-'}`
+			].join('\n');
+
+			window.open(`https://wa.me/6283180719216?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+		});
+	</script>
+<script>
+const menuButton = document.querySelector('.menu-button');
+const mobileMenu = document.getElementById('mobile-menu');
+const openIcon = menuButton?.querySelector('.menu-open');
+const closeIcon = menuButton?.querySelector('.menu-close');
+
+function closeMobileMenu() {
+if (!menuButton || !mobileMenu || !openIcon || !closeIcon) return;
+mobileMenu.classList.add('hidden');
+openIcon.classList.remove('hidden');
+closeIcon.classList.add('hidden');
+menuButton.setAttribute('aria-expanded', 'false');
+}
+
+menuButton?.addEventListener('click', () => {
+const isOpen = mobileMenu.classList.toggle('hidden') === false;
+openIcon.classList.toggle('hidden', isOpen);
+closeIcon.classList.toggle('hidden', !isOpen);
+menuButton.setAttribute('aria-expanded', String(isOpen));
+});
+
+mobileMenu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMobileMenu));
+</script></body>
+</html>
