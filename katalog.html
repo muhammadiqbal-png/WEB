@@ -166,7 +166,7 @@ cursor: pointer;
 		.catalog-toolbar {
 			display: flex;
 			align-items: center;
-			justify-content: space-between;
+			justify-content: flex-start;
 			gap: 20px;
 			margin-bottom: 22px;
 		}
@@ -178,53 +178,30 @@ cursor: pointer;
 			text-transform: uppercase;
 		}
 
-		.slide-controls { display: flex; gap: 10px; }
-
-		.icon-button {
-			width: 42px;
-			height: 42px;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			border: 1px solid var(--border);
-			border-radius: 999px;
-			color: var(--foreground);
-			background: transparent;
-			cursor: pointer;
-			transition: background .25s ease, color .25s ease, border-color .25s ease;
-		}
-
-		.icon-button:hover {
-			background: var(--primary);
-			border-color: var(--primary);
-			color: var(--surface);
-		}
-
 		.slider {
 			display: grid;
-			grid-auto-flow: column;
-			grid-auto-columns: minmax(290px, 34%);
+			grid-template-columns: repeat(3, minmax(0, 1fr));
 			gap: 24px;
-			overflow-x: auto;
-			scroll-snap-type: x mandatory;
-			scroll-behavior: smooth;
-			padding: 2px 2px 18px;
-			scrollbar-width: thin;
-			scrollbar-color: var(--primary) rgba(24, 19, 15, .12);
+			padding: 2px 0 18px;
+			align-items: stretch;
 		}
 
 		.catalog-card {
-			scroll-snap-align: start;
 			border: 1px solid var(--border);
 			background: rgba(255, 250, 240, .52);
 			min-height: 100%;
+			display: flex;
+			flex-direction: column;
 		}
 
 		.card-media {
 			position: relative;
-			aspect-ratio: 4 / 5;
+			height: clamp(220px, 24vw, 280px);
 			overflow: hidden;
 			background: var(--muted);
+			display: flex;
+			align-items: center;
+			justify-content: center;
 		}
 
 		.card-media img {
@@ -232,7 +209,7 @@ cursor: pointer;
 			height: 100%;
 			object-fit: contain;
 			object-position: center;
-			padding: 10px;
+			padding: 12px;
 		}
 
 		.badge {
@@ -249,7 +226,12 @@ cursor: pointer;
 			text-transform: uppercase;
 		}
 
-		.card-content { padding: 22px; }
+		.card-content {
+			padding: 22px;
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+		}
 
 		.card-top {
 			display: flex;
@@ -306,7 +288,8 @@ cursor: pointer;
 			align-items: center;
 			justify-content: space-between;
 			gap: 14px;
-			margin-top: 22px;
+			margin-top: auto;
+			padding-top: 22px;
 		}
 
 		.secondary-link {
@@ -373,7 +356,7 @@ cursor: pointer;
 			.container { width: min(100% - 32px, 1180px); }
 			.nav-links { gap: 18px; }
 			.hero-grid { grid-template-columns: 1fr; gap: 26px; }
-			.slider { grid-auto-columns: minmax(280px, 78%); }
+			.slider { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 			.assurance { grid-template-columns: 1fr; }
 			.assurance-item { border-right: 0; border-bottom: 1px solid var(--border); }
 			.assurance-item:last-child { border-bottom: 0; }
@@ -384,8 +367,8 @@ cursor: pointer;
 			.nav-links { display: none; }
 			.menu-button { display: inline-flex; }
 			.hero { padding-top: 54px; }
-			.catalog-toolbar { align-items: flex-start; flex-direction: column; }
-			.slider { grid-auto-columns: 90%; }
+			.catalog-toolbar { align-items: flex-start; }
+			.slider { grid-template-columns: 1fr; }
 			.card-actions { align-items: stretch; flex-direction: column; }
 			.primary-button { width: 100%; }
 			.footer-row { align-items: flex-start; flex-direction: column; }
@@ -433,127 +416,176 @@ cursor: pointer;
 		<main class="catalog-stage">
 			<section class="container" aria-labelledby="catalog-title">
 				<div class="catalog-toolbar">
-					<p class="catalog-count" id="catalog-title">6 sapi pilihan tersedia</p>
-					<div class="slide-controls" aria-label="Kontrol slide katalog">
-						<button class="icon-button" type="button" id="prev-slide" aria-label="Geser katalog ke kiri">
-							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
-						</button>
-						<button class="icon-button" type="button" id="next-slide" aria-label="Geser katalog ke kanan">
-							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
-						</button>
-					</div>
+					<p class="catalog-count" id="catalog-title">9 sapi pilihan tersedia</p>
 				</div>
 
-				<div class="slider" id="catalog-slider" tabindex="0" aria-label="Slide katalog sapi suaimi livestock">
+				<div class="slider" id="catalog-slider" aria-label="Daftar katalog sapi suaimi livestock">
 					<article class="catalog-card">
 						<div class="card-media">
-							<img src="image/sapi1.jpg" alt="Black Titan, tampak samping sapi premium">
+							<img src="image/sapi1.jpg" alt="SP-002, sapi Bali jantan">
 							<span class="badge">Premium</span>
 						</div>
 						<div class="card-content">
 							<div class="card-top">
-								<div><h2 class="card-title">Black Titan</h2><p class="card-subtitle">Brahmana Cross - 480 kg</p></div>
-								<span class="price">Rp 35 Jt</span>
+								<div><h2 class="card-title">SP-002</h2><p class="card-subtitle">Sapi Bali Jantan</p></div>
+								<span class="price">Rp 17.000.000</span>
 							</div>
 							<div class="spec-grid">
-								<div class="spec"><span>Usia</span><strong>2.5 tahun</strong></div>
-								<div class="spec"><span>Grade</span><strong>A+</strong></div>
-								<div class="spec"><span>Status</span><strong>Ready</strong></div>
+								<div class="spec"><span>Kelamin</span><strong>Jantan</strong></div>
+								<div class="spec"><span>Bobot</span><strong>± 220 kg</strong></div>
+								<div class="spec"><span>Status</span><strong>Tersedia</strong></div>
 							</div>
-							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20Black%20Titan." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi1.html">Detail</a></div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-002%20Sapi%20Bali%20Jantan." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi1.html">Detail</a></div>
 						</div>
 					</article>
 
 					<article class="catalog-card">
 						<div class="card-media">
-							<img src="image/sapi2.jpg" alt="Titan Brown, sapi Jersey premium">
+							<img src="image/sapi2.jpg" alt="SP-001, sapi Bali betina">
 							<span class="badge">Best Seller</span>
 						</div>
 						<div class="card-content">
 							<div class="card-top">
-								<div><h2 class="card-title">Titan Brown</h2><p class="card-subtitle">Jersey - 520 kg</p></div>
-								<span class="price">Rp 42 Jt</span>
+								<div><h2 class="card-title">SP-001</h2><p class="card-subtitle">Sapi Bali Betina</p></div>
+								<span class="price">Rp 18.500.000</span>
 							</div>
 							<div class="spec-grid">
-								<div class="spec"><span>Usia</span><strong>3 tahun</strong></div>
-								<div class="spec"><span>Grade</span><strong>A+</strong></div>
-								<div class="spec"><span>Status</span><strong>Ready</strong></div>
+								<div class="spec"><span>Kelamin</span><strong>Betina</strong></div>
+								<div class="spec"><span>Bobot</span><strong>± 250 kg</strong></div>
+								<div class="spec"><span>Status</span><strong>Tersedia</strong></div>
 							</div>
-							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20Titan%20Brown." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi2.html">Detail</a></div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-001%20Sapi%20Bali%20Betina." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi2.html">Detail</a></div>
 						</div>
 					</article>
 
 					<article class="catalog-card">
 						<div class="card-media">
-							<img src="image/sapi3.jpg" alt="Arjuna Prime, sapi Jersey premium">
+							<img src="image/sapi3.jpg" alt="SP-003, sapi Bali betina">
 						</div>
 						<div class="card-content">
 							<div class="card-top">
-								<div><h2 class="card-title">Arjuna Prime</h2><p class="card-subtitle">Jersey - 450 kg</p></div>
-								<span class="price">Rp 31 Jt</span>
+								<div><h2 class="card-title">SP-003</h2><p class="card-subtitle">Sapi Bali Betina</p></div>
+								<span class="price">Rp 16.500.000</span>
 							</div>
 							<div class="spec-grid">
-								<div class="spec"><span>Usia</span><strong>2 tahun</strong></div>
-								<div class="spec"><span>Grade</span><strong>A</strong></div>
-								<div class="spec"><span>Status</span><strong>Ready</strong></div>
+								<div class="spec"><span>Kelamin</span><strong>Betina</strong></div>
+								<div class="spec"><span>Bobot</span><strong>± 210 kg</strong></div>
+								<div class="spec"><span>Status</span><strong>Tersedia</strong></div>
 							</div>
-							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20Arjuna%20Prime." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi3.html">Detail</a></div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-003%20Sapi%20Bali%20Betina." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi3.html">Detail</a></div>
 						</div>
 					</article>
 
 					<article class="catalog-card">
 						<div class="card-media">
-							<img src="image/sapi4.jpg" alt="Gagak Rimang, sapi Jersey premium">
+							<img src="image/sapi4.jpg" alt="SP-005, sapi Bali jantan">
 							<span class="badge">Kurban</span>
 						</div>
 						<div class="card-content">
 							<div class="card-top">
-								<div><h2 class="card-title">Gagak Rimang</h2><p class="card-subtitle">Jersey - 430 kg</p></div>
-								<span class="price">Rp 29 Jt</span>
+								<div><h2 class="card-title">SP-005</h2><p class="card-subtitle">Sapi Bali Jantan</p></div>
+								<span class="price">Rp 14.500.000</span>
 							</div>
 							<div class="spec-grid">
-								<div class="spec"><span>Usia</span><strong>2.3 tahun</strong></div>
-								<div class="spec"><span>Grade</span><strong>A</strong></div>
-								<div class="spec"><span>Status</span><strong>Ready</strong></div>
+								<div class="spec"><span>Kelamin</span><strong>Jantan</strong></div>
+								<div class="spec"><span>Bobot</span><strong>± 180 kg</strong></div>
+								<div class="spec"><span>Status</span><strong>Tersedia</strong></div>
 							</div>
-							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20Gagak%20Rimang." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi4.html">Detail</a></div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-005%20Sapi%20Bali%20Jantan." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi4.html">Detail</a></div>
 						</div>
 					</article>
 
 					<article class="catalog-card">
 						<div class="card-media">
-							<img src="image/sapi5.jpg" alt="Amanah, sapi Jersey premium">
+							<img src="image/sapi5.jpg" alt="SP-006, sapi Bali betina">
 						</div>
 						<div class="card-content">
 							<div class="card-top">
-								<div><h2 class="card-title">Amanah</h2><p class="card-subtitle">Jersey - 465 kg</p></div>
-								<span class="price">Rp 33 Jt</span>
+								<div><h2 class="card-title">SP-006</h2><p class="card-subtitle">Sapi Bali Betina</p></div>
+								<span class="price">Rp 18.000.000</span>
 							</div>
 							<div class="spec-grid">
-								<div class="spec"><span>Usia</span><strong>2.4 tahun</strong></div>
-								<div class="spec"><span>Grade</span><strong>A</strong></div>
-								<div class="spec"><span>Status</span><strong>Ready</strong></div>
+								<div class="spec"><span>Kelamin</span><strong>Betina</strong></div>
+								<div class="spec"><span>Bobot</span><strong>± 240 kg</strong></div>
+								<div class="spec"><span>Status</span><strong>Tersedia</strong></div>
 							</div>
-							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20Amanah." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi5.html">Detail</a></div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-006%20Sapi%20Bali%20Betina." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi5.html">Detail</a></div>
 						</div>
 					</article>
 
 					<article class="catalog-card">
 						<div class="card-media">
-							<img src="image/s8000.jpg" alt="Bima Raya, Mesin Rumput S8000">
+							<img src="image/sapi6.jpg" alt="SP-007, sapi Bali betina">
 							<span class="badge">Siap Kirim</span>
 						</div>
 						<div class="card-content">
 							<div class="card-top">
-								<div><h2 class="card-title">Mesin Rumput S8000</h2><p class="card-subtitle">Bima Raya</p></div>
-								<span class="price">RM 999.999.999</span>
+								<div><h2 class="card-title">SP-007</h2><p class="card-subtitle">Sapi Bali Betina</p></div>
+								<span class="price">Rp 19.000.000</span>
 							</div>
 							<div class="spec-grid">
-								<div class="spec"><span>Usia</span><strong>2.8 tahun</strong></div>
-								<div class="spec"><span>Grade</span><strong>A+</strong></div>
-								<div class="spec"><span>Status</span><strong>Ready</strong></div>
+								<div class="spec"><span>Kelamin</span><strong>Betina</strong></div>
+								<div class="spec"><span>Bobot</span><strong>± 290 kg</strong></div>
+								<div class="spec"><span>Status</span><strong>Tersedia</strong></div>
 							</div>
-							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20Mesin%20Rumput%20S8000." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailss8000.html">Detail</a></div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-007%20Sapi%20Bali%20Betina." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailss8000.html">Detail</a></div>
+						</div>
+					</article>
+
+					<article class="catalog-card">
+						<div class="card-media">
+							<img src="image/sapi8.jpg" alt="SP-004, sapi Brahman Cross (BX) jantan">
+							<span class="badge">Pilihan Baru</span>
+						</div>
+						<div class="card-content">
+							<div class="card-top">
+								<div><h2 class="card-title">SP-004</h2><p class="card-subtitle">Sapi Brahman Cross (BX) Jantan</p></div>
+								<span class="price">Rp 31.000.000</span>
+							</div>
+							<div class="spec-grid">
+								<div class="spec"><span>Usia</span><strong>± 3 Tahun</strong></div>
+								<div class="spec"><span>Bobot</span><strong>± 480 kg</strong></div>
+								<div class="spec"><span>Status</span><strong>Tersedia</strong></div>
+							</div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-004%20Sapi%20Brahman%20Cross%20(BX)%20Jantan." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi6.html">Detail</a></div>
+						</div>
+					</article>
+
+					<article class="catalog-card">
+						<div class="card-media">
+							<img src="image/sapi11.jpg" alt="SP-008, pedet sapi Bali betina">
+							<span class="badge">Unggulan</span>
+						</div>
+						<div class="card-content">
+							<div class="card-top">
+								<div><h2 class="card-title">SP-008</h2><p class="card-subtitle">Pedet Sapi Bali Betina</p></div>
+								<span class="price">Rp 7.500.000</span>
+							</div>
+							<div class="spec-grid">
+								<div class="spec"><span>Kelamin</span><strong>Betina</strong></div>
+								<div class="spec"><span>Bobot</span><strong>± 70 kg</strong></div>
+								<div class="spec"><span>Status</span><strong>Tersedia</strong></div>
+							</div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-008%20Pedet%20Sapi%20Bali%20Betina." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi7.html">Detail</a></div>
+						</div>
+					</article>
+
+					<article class="catalog-card">
+						<div class="card-media">
+							<img src="image/sapi12.jpg" alt="SP-009, sapi Bali betina">
+							<span class="badge">Favorit</span>
+						</div>
+						<div class="card-content">
+							<div class="card-top">
+								<div><h2 class="card-title">SP-009</h2><p class="card-subtitle">Sapi Bali Betina</p></div>
+								<span class="price">Rp 24.000.000</span>
+							</div>
+							<div class="spec-grid">
+								<div class="spec"><span>Kelamin</span><strong>Betina</strong></div>
+								<div class="spec"><span>Bobot</span><strong>± 310 kg</strong></div>
+								<div class="spec"><span>Status</span><strong>Tersedia</strong></div>
+							</div>
+							<div class="card-actions"><a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-009%20Sapi%20Bali%20Betina." target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="./detailsapi8.html">Detail</a></div>
 						</div>
 					</article>
 				</div>
@@ -574,20 +606,6 @@ cursor: pointer;
 		</footer>
 	</div>
 
-	<script>
-		const slider = document.getElementById('catalog-slider');
-		const prevButton = document.getElementById('prev-slide');
-		const nextButton = document.getElementById('next-slide');
-
-		function slideByCard(direction) {
-			const firstCard = slider.querySelector('.catalog-card');
-			const distance = firstCard ? firstCard.getBoundingClientRect().width + 24 : 320;
-			slider.scrollBy({ left: direction * distance, behavior: 'smooth' });
-		}
-
-		prevButton.addEventListener('click', () => slideByCard(-1));
-		nextButton.addEventListener('click', () => slideByCard(1));
-	</script>
 <script>
 const menuButton = document.querySelector('.menu-button');
 const mobileMenu = document.getElementById('mobile-menu');
