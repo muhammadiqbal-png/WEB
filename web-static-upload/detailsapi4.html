@@ -3,9 +3,9 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="Tentang suaimi livestock, peternakan sapi premium dengan kurasi kesehatan, pakan, dan pengiriman aman.">
+	<meta name="description" content="Detail SP-005, sapi Bali jantan suaimi livestock.">
 	<meta name="theme-color" content="#9c4f2f">
-	<title>Tentang Farm - Suaimi Livestock</title>
+	<title>Detail SP-005 - Suaimi Livestock</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700;9..144,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -62,7 +62,7 @@
 		.nav-links {
 			display: flex;
 			align-items: center;
-			gap: 28px;
+			gap: 32px;
 			color: var(--muted-foreground);
 			font-size: 13px;
 			font-weight: 700;
@@ -115,16 +115,9 @@ cursor: pointer;
 		.nav-cta:hover,
 		.primary-button:hover { background: var(--primary-dark); border-color: var(--primary-dark); transform: translateY(-1px); }
 
-		.hero {
-			padding: 86px 0 58px;
+		.detail-hero {
+			padding: 82px 0 54px;
 			border-bottom: 1px solid var(--border);
-		}
-
-		.hero-grid {
-			display: grid;
-			grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr);
-			gap: 48px;
-			align-items: end;
 		}
 
 		.eyebrow {
@@ -134,6 +127,13 @@ cursor: pointer;
 			font-weight: 800;
 			letter-spacing: .32em;
 			text-transform: uppercase;
+		}
+
+		.hero-grid {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) minmax(300px, .78fr);
+			gap: 48px;
+			align-items: end;
 		}
 
 		h1 {
@@ -152,139 +152,120 @@ cursor: pointer;
 			line-height: 1.7;
 		}
 
-		.about-section { padding: 48px 0 88px; }
+		.detail-section { padding: 44px 0 88px; }
 
-		.story-grid {
+		.detail-grid {
 			display: grid;
-			grid-template-columns: minmax(0, .95fr) minmax(320px, 1.05fr);
+			grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr);
 			gap: 30px;
-			align-items: stretch;
+			align-items: start;
 		}
 
-		.story-media,
-		.story-panel,
-		.process-panel {
+		.gallery,
+		.info-panel,
+		.note-panel {
 			border: 1px solid var(--border);
 			background: rgba(255, 250, 240, .52);
 		}
 
-		.story-media {
-			min-height: 520px;
+		.main-photo {
+			aspect-ratio: 4 / 3;
 			overflow: hidden;
+			background: var(--muted);
 		}
 
-		.story-media img {
+		.main-photo img {
 			width: 100%;
 			height: 100%;
 			object-fit: cover;
 		}
 
-		.story-panel { padding: 34px; }
+		.info-panel { padding: 30px; }
 
-		.panel-title {
-			margin: 0 0 18px;
-			font-family: "Fraunces", Georgia, serif;
-			font-size: clamp(32px, 4vw, 54px);
-			line-height: 1.05;
-		}
-
-		.panel-copy {
-			margin: 0 0 22px;
-			color: var(--muted-foreground);
-			line-height: 1.75;
-			font-size: 17px;
-		}
-
-		.stats {
-			display: grid;
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-			gap: 0;
-			margin-top: 30px;
-			border-top: 1px solid var(--border);
+		.price-row {
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			gap: 18px;
+			padding-bottom: 24px;
 			border-bottom: 1px solid var(--border);
 		}
 
-		.stat {
-			padding: 22px 18px;
-			border-right: 1px solid var(--border);
-		}
-
-		.stat:last-child { border-right: 0; }
-		.stat strong {
-			display: block;
+		.title-block h2 {
+			margin: 0 0 8px;
 			font-family: "Fraunces", Georgia, serif;
-			font-size: 36px;
-			line-height: 1;
-			color: var(--primary);
-			margin-bottom: 8px;
+			font-size: 34px;
+			line-height: 1.08;
 		}
 
-		.stat span {
+		.title-block p { margin: 0; color: var(--muted-foreground); }
+		.price { color: var(--primary); font-size: 20px; font-weight: 800; white-space: nowrap; }
+
+		.spec-list {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 16px;
+			margin: 24px 0;
+		}
+
+		.spec {
+			padding-top: 16px;
+			border-top: 1px solid var(--border);
+		}
+
+		.spec span {
+			display: block;
+			margin-bottom: 5px;
 			color: var(--muted-foreground);
-			font-size: 12px;
+			font-size: 10px;
 			font-weight: 800;
-			letter-spacing: .12em;
+			letter-spacing: .18em;
 			text-transform: uppercase;
 		}
 
-		.process-panel {
+		.spec strong { font-size: 16px; }
+		.description { color: var(--muted-foreground); line-height: 1.7; margin: 0 0 24px; }
+
+		.action-row {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 12px;
+		}
+
+		.secondary-button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			border: 1px solid var(--border);
+			padding: 15px 22px;
+			font-size: 13px;
+			font-weight: 800;
+			letter-spacing: .04em;
+			text-transform: uppercase;
+			transition: border-color .25s ease, color .25s ease;
+		}
+
+		.secondary-button:hover { border-color: var(--primary); color: var(--primary); }
+
+		.note-panel {
 			margin-top: 30px;
 			display: grid;
-			grid-template-columns: repeat(4, minmax(0, 1fr));
+			grid-template-columns: repeat(3, minmax(0, 1fr));
 		}
 
-		.process-item {
-			padding: 30px;
-			border-right: 1px solid var(--border);
-		}
-
-		.process-item:last-child { border-right: 0; }
-		.process-item span {
+		.note-item { padding: 28px; border-right: 1px solid var(--border); }
+		.note-item:last-child { border-right: 0; }
+		.note-item span {
 			display: block;
 			color: rgba(156, 79, 47, .22);
 			font-family: "Fraunces", Georgia, serif;
-			font-size: 48px;
+			font-size: 44px;
 			line-height: 1;
-			margin-bottom: 14px;
+			margin-bottom: 12px;
 		}
 
-		.process-item h2 {
-			margin: 0 0 10px;
-			font-family: "Fraunces", Georgia, serif;
-			font-size: 24px;
-			line-height: 1.1;
-		}
-
-		.process-item p {
-			margin: 0;
-			color: var(--muted-foreground);
-			line-height: 1.65;
-		}
-
-		.cta-band {
-			margin-top: 30px;
-			background: var(--foreground);
-			color: var(--background);
-			padding: 42px;
-			display: flex;
-			justify-content: space-between;
-			gap: 28px;
-			align-items: center;
-		}
-
-		.cta-band h2 {
-			margin: 0;
-			font-family: "Fraunces", Georgia, serif;
-			font-size: clamp(30px, 4vw, 52px);
-			line-height: 1.05;
-		}
-
-		.cta-band p {
-			margin: 12px 0 0;
-			color: rgba(246, 241, 233, .68);
-			line-height: 1.65;
-			max-width: 560px;
-		}
+		.note-item h3 { margin: 0 0 9px; font-family: "Fraunces", Georgia, serif; font-size: 22px; }
+		.note-item p { margin: 0; color: var(--muted-foreground); line-height: 1.65; }
 
 		footer {
 			background: var(--foreground);
@@ -301,34 +282,25 @@ cursor: pointer;
 			font-size: 13px;
 		}
 
-		@media (max-width: 980px) {
+		@media (max-width: 900px) {
 			.container { width: min(100% - 32px, 1180px); }
 			.hero-grid,
-			.story-grid { grid-template-columns: 1fr; }
-			.process-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-			.process-item:nth-child(2) { border-right: 0; }
-			.process-item:nth-child(-n + 2) { border-bottom: 1px solid var(--border); }
+			.detail-grid { grid-template-columns: 1fr; }
 			.nav-links { gap: 18px; }
+			.note-panel { grid-template-columns: 1fr; }
+			.note-item { border-right: 0; border-bottom: 1px solid var(--border); }
+			.note-item:last-child { border-bottom: 0; }
 		}
 
 		@media (max-width: 720px) {
 			.nav-inner { height: 68px; padding: 0; align-items: center; flex-direction: row; }
 			.nav-links { display: none; }
 			.menu-button { display: inline-flex; }
-			.hero { padding-top: 54px; }
-			.story-media { min-height: 320px; }
-			.story-panel,
-			.process-item,
-			.cta-band { padding: 24px; }
-			.stats,
-			.process-panel { grid-template-columns: 1fr; }
-			.stat,
-			.process-item { border-right: 0; border-bottom: 1px solid var(--border); }
-			.stat:last-child,
-			.process-item:last-child { border-bottom: 0; }
-			.cta-band,
+			.detail-hero { padding-top: 54px; }
+			.spec-list,
+			.action-row { grid-template-columns: 1fr; }
+			.info-panel { padding: 24px; }
 			.footer-row { align-items: flex-start; flex-direction: column; }
-			.primary-button { width: 100%; }
 		}
 	</style>
 </head>
@@ -339,11 +311,10 @@ cursor: pointer;
 <a href="./index.html" class="brand">suaimi<span>.</span></a>
 <div class="nav-links" aria-label="Navigasi utama">
 <a href="./index.html">Beranda</a>
-					<a href="./tentang.html" aria-current="page">Tentang Farm</a>
-					<a href="./katalog.html">Katalog</a>
+					<a href="./tentang.html">Tentang Farm</a>
+					<a href="./katalog.html" aria-current="page">Katalog</a>
 					<a href="./kontak.html">Kontak</a>
-					<a href="./login.html">Login</a>
-						<a class="nav-cta" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20ingin%20tahu%20tentang%20farm." target="_blank" rel="noopener noreferrer">WhatsApp Kami</a>
+						<a href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-005%20Sapi%20Bali%20Jantan." target="_blank" rel="noopener noreferrer">WhatsApp Kami</a>
 </div>
 <button class="menu-button" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="mobile-menu">
 <svg class="menu-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
@@ -353,58 +324,66 @@ cursor: pointer;
 <div id="mobile-menu" class="mobile-menu hidden">
 <div class="container mobile-menu-inner">
 <a href="./index.html">Beranda</a>
-					<a href="./tentang.html" aria-current="page">Tentang Farm</a>
-					<a href="./katalog.html">Katalog</a>
+					<a href="./tentang.html">Tentang Farm</a>
+					<a href="./katalog.html" aria-current="page">Katalog</a>
 					<a href="./kontak.html">Kontak</a>
-					<a href="./login.html">Login</a>
-					<a class="nav-cta" href="https://wa.me/6283180719216?text=Halo%20SapiBagus%20Farm%2C%20saya%20ingin%20tahu%20tentang%20farm." target="_blank" rel="noopener noreferrer">WhatsApp Kami</a>
+						<a href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-005%20Sapi%20Bali%20Jantan." target="_blank" rel="noopener noreferrer">WhatsApp Kami</a>
 </div>
 </div>
 </nav>
 
-		<header class="hero">
+		<header class="detail-hero">
 			<div class="container hero-grid">
 				<div>
-					<p class="eyebrow">Tentang Farm</p>
-					<h1>Peternakan<br><em>yang Dikurasi.</em></h1>
+					<p class="eyebrow">Detail Katalog</p>
+					<h1>SP-005<br><em>Sapi Bali Jantan.</em></h1>
 				</div>
-				<p class="hero-copy">suaimi livestock dibangun untuk menghadirkan sapi pilihan dengan standar kesehatan, perawatan, dan pengiriman yang lebih jelas sejak pemilihan hingga sampai di lokasi Anda.</p>
+				<p class="hero-copy">Sapi Bali jantan dengan tubuh aktif, kondisi fisik baik, dan siap dipilih untuk kebutuhan ternak maupun pembelian langsung.</p>
 			</div>
 		</header>
 
-		<main class="about-section">
-			<section class="container" aria-label="Cerita suaimi livestock">
-				<div class="story-grid">
-					<div class="story-media">
-							<img src="image/kandang.jpg" alt="Kandang suaimi livestock">
-					</div>
-					<div class="story-panel">
-						<p class="eyebrow">Cerita Kami</p>
-						<h2 class="panel-title">Bukan sekadar jual sapi, tapi menjaga kepercayaan pembeli.</h2>
-						<p class="panel-copy">Kami berfokus pada kurasi sapi yang sehat, layak, dan mudah diverifikasi. Setiap unit dipilih berdasarkan tampilan fisik, bobot, usia, dan kesiapan pengiriman agar pembeli mendapatkan informasi yang ringkas namun berguna.</p>
-						<p class="panel-copy">Tim farm menjaga perawatan harian, kebersihan kandang, pola pakan, dan koordinasi pengiriman. Tujuannya sederhana: membuat proses beli sapi terasa lebih tenang, transparan, dan profesional.</p>
-
-						<div class="stats" aria-label="Ringkasan farm">
-							<div class="stat"><strong>6</strong><span>Unit Pilihan</span></div>
-							<div class="stat"><strong>4</strong><span>Tahap Kurasi</span></div>
-							<div class="stat"><strong>08-17</strong><span>Jam Layanan</span></div>
+		<main class="detail-section">
+			<section class="container" aria-label="Detail SP-005 Sapi Bali Jantan">
+				<div class="detail-grid">
+					<div class="gallery">
+						<div class="main-photo">
+							<img src="image/sapi4.jpg" alt="SP-005, sapi Bali jantan">
 						</div>
 					</div>
+
+					<aside class="info-panel">
+						<div class="price-row">
+							<div class="title-block">
+								<h2>SP-005</h2>
+								<p>Sapi Bali Jantan</p>
+							</div>
+							<strong class="price">Rp 14.500.000</strong>
+						</div>
+
+						<div class="spec-list">
+							<div class="spec"><span>Kode Sapi</span><strong>SP-005</strong></div>
+							<div class="spec"><span>Jenis Sapi</span><strong>Sapi Bali Jantan</strong></div>
+							<div class="spec"><span>Kelamin</span><strong>Jantan</strong></div>
+							<div class="spec"><span>Umur</span><strong>± 1,5 Tahun</strong></div>
+							<div class="spec"><span>Bobot</span><strong>± 180 kg</strong></div>
+							<div class="spec"><span>Warna</span><strong>Cokelat kemerahan</strong></div>
+							<div class="spec"><span>Status</span><strong>Tersedia</strong></div>
+							<div class="spec"><span>Lokasi</span><strong>Samalanga, Bireuen</strong></div>
+						</div>
+
+						<p class="description">Kondisi kesehatan: memiliki kondisi fisik yang baik dengan bulu tampak halus dan mengilap, tubuh aktif, mata terlihat cerah, serta kaki yang kokoh untuk menunjang aktivitas sehari-hari. Dari pengamatan visual tidak tampak adanya luka, pincang, maupun kelainan pada tubuh.</p>
+
+						<div class="action-row">
+								<a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20ingin%20reservasi%20SP-005%20Sapi%20Bali%20Jantan." target="_blank" rel="noopener noreferrer">Reservasi</a>
+							<a class="secondary-button" href="./katalog.html">Kembali</a>
+						</div>
+					</aside>
 				</div>
 
-				<div class="process-panel" aria-label="Standar kerja suaimi livestock">
-					<article class="process-item"><span>01</span><h2>Kurasi Unit</h2><p>Setiap sapi dicek berdasarkan bobot, usia, postur, dan kesiapan sebelum masuk katalog.</p></article>
-					<article class="process-item"><span>02</span><h2>Perawatan Harian</h2><p>Pakan, air, kebersihan kandang, dan kondisi visual dipantau agar sapi tetap prima.</p></article>
-					<article class="process-item"><span>03</span><h2>Konsultasi Admin</h2><p>Pembeli dapat berkonsultasi untuk memilih sapi sesuai kebutuhan, anggaran, dan jadwal.</p></article>
-					<article class="process-item"><span>04</span><h2>Pengiriman Aman</h2><p>Jadwal dan lokasi pengiriman dikonfirmasi agar sapi sampai dengan kondisi baik.</p></article>
-				</div>
-
-				<div class="cta-band">
-					<div>
-						<h2>Lihat sapi yang siap dipilih.</h2>
-						<p>Katalog berisi unit yang sudah dikurasi dengan detail bobot, usia, grade, status, dan tautan reservasi langsung.</p>
-					</div>
-					<a class="primary-button" href="./katalog.html">Buka Katalog</a>
+				<div class="note-panel">
+					<article class="note-item"><span>01</span><h3>Kode Ternak</h3><p>Kode SP-005 memudahkan pengecekan data saat konsultasi dan reservasi.</p></article>
+					<article class="note-item"><span>02</span><h3>Kondisi Visual</h3><p>Bulu halus mengilap, mata cerah, dan kaki kokoh berdasarkan pengamatan visual.</p></article>
+					<article class="note-item"><span>03</span><h3>Status Tersedia</h3><p>Hubungi WhatsApp untuk reservasi SP-005 sebelum dialokasikan ke pembeli lain.</p></article>
 				</div>
 			</section>
 		</main>
@@ -412,7 +391,7 @@ cursor: pointer;
 		<footer>
 			<div class="container footer-row">
 				<p>suaimi livestock. Peternakan berizin dan tersertifikasi.</p>
-				<a href="./kontak.html">Kontak admin</a>
+				<a href="./katalog.html">Kembali ke katalog</a>
 			</div>
 		</footer>
 	</div>

@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: suaimi-backend
+    env: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: node src/server.js
+    envVars:
+      - key: NODE_VERSION
+        value: 24.18.0
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000
