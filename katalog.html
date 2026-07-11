@@ -440,6 +440,7 @@ cursor: pointer;
 	</div>
 
 <script src="./auth-config.js"></script>
+<script src="./supabase.min.js"></script>
 <script>
 const menuButton = document.querySelector('.menu-button');
 const mobileMenu = document.getElementById('mobile-menu');
@@ -447,8 +448,12 @@ const openIcon = menuButton?.querySelector('.menu-open');
 const closeIcon = menuButton?.querySelector('.menu-close');
 const catalogSlider = document.getElementById('catalog-slider');
 const catalogCount = document.getElementById('catalog-title');
-const BACKEND_BASE_URL = window.AUTH_CONFIG?.BACKEND_BASE_URL || 'http://localhost:3000';
-const CATTLE_LIST_ENDPOINT = window.AUTH_CONFIG?.CATTLE_LIST_ENDPOINT || '/api/cattle';
+const SUPABASE_URL = window.AUTH_CONFIG?.SUPABASE_URL || 'https://etgnnyigpmmsbwppymsm.supabase.co';
+const SUPABASE_ANON_KEY = window.AUTH_CONFIG?.SUPABASE_ANON_KEY || 'sb_publishable_XJfL6VDZxULEmsHUKm8xkQ_t4GAY6HH';
+const CATTLE_TABLE = window.AUTH_CONFIG?.SUPABASE_CATTLE_TABLE || 'cattle';
+const supabaseClient = (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase?.createClient)
+	? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+	: null;
 
 const DETAIL_BY_CODE = {
 	'SP-002': './detailsapi1.html',
@@ -461,6 +466,10 @@ const DETAIL_BY_CODE = {
 	'SP-009': './detailsapi8.html',
 	'SP-007': './detailss8000.html'
 };
+
+function buildDetailLink(item) {
+	return DETAIL_BY_CODE[item.code] || `./detail.html?code=${encodeURIComponent(item.code || '')}`;
+}
 
 function formatRupiah(value) {
 	return new Intl.NumberFormat('id-ID', {
@@ -481,6 +490,18 @@ function getBadge(status) {
 	return 'Tersedia';
 }
 
+function normalizeCatalogImageUrl(rawValue) {
+	const value = String(rawValue || '').trim();
+	if (!value) return 'image/sapi1.jpg';
+	if (value.startsWith('http://') || value.startsWith('https://') || value.startsWith('./') || value.startsWith('../') || value.startsWith('/')) {
+		return value;
+	}
+	if (value.includes('/')) {
+		return value.toLowerCase();
+	}
+	return `image/${value.toLowerCase()}`;
+}
+
 function renderCatalog(items) {
 	if (!catalogSlider || !catalogCount) return;
 
@@ -493,13 +514,14 @@ function renderCatalog(items) {
 	catalogCount.textContent = `${items.length} sapi pilihan tersedia`;
 
 	catalogSlider.innerHTML = items.map((item) => {
-		const detailLink = DETAIL_BY_CODE[item.code] || './kontak.html';
-		const imageUrl = item.image_url || 'image/sapi1.jpg';
+		const detailLink = buildDetailLink(item);
+		const imageUrl = normalizeCatalogImageUrl(item.image_url);
 		const name = item.name || 'Sapi Pilihan';
 		const breed = item.breed || '-';
 		const gender = item.gender || '-';
 		const status = item.status || 'Tersedia';
 		const weight = item.weight_kg || 0;
+		const healthCondition = item.health_condition || '';
 		const badge = getBadge(status);
 
 		return `
@@ -519,6 +541,7 @@ function renderCatalog(items) {
 					<div class="spec"><span>Ras</span><strong>${breed}</strong></div>
 					<div class="spec"><span>Status</span><strong>${status}</strong></div>
 				</div>
+				${healthCondition ? `<p class="card-subtitle" style="margin-top:16px;line-height:1.6">Kondisi kesehatan: ${healthCondition}</p>` : ''}
 				<div class="card-actions"><a class="primary-button" href="${createWaLink(item)}" target="_blank" rel="noopener noreferrer">Reservasi</a><a class="secondary-link" href="${detailLink}">Detail</a></div>
 			</div>
 		</article>`;
@@ -527,25 +550,31 @@ function renderCatalog(items) {
 
 async function loadCatalogFromApi() {
 	if (!catalogSlider || !catalogCount) return;
+	if (!supabaseClient) {
+		if (!window.supabase?.createClient) {
+			catalogCount.textContent = 'Library Supabase gagal dimuat';
+			catalogSlider.innerHTML = '<article class="catalog-card"><div class="card-content"><p class="card-subtitle">File SDK Supabase belum termuat. Upload file terbaru atau refresh halaman.</p></div></article>';
+		} else {
+			catalogCount.textContent = 'Konfigurasi Supabase belum lengkap';
+			catalogSlider.innerHTML = '<article class="catalog-card"><div class="card-content"><p class="card-subtitle">Isi SUPABASE_URL dan SUPABASE_ANON_KEY di auth-config.js dulu.</p></div></article>';
+		}
+		return;
+	}
 
 	catalogCount.textContent = 'Memuat data katalog...';
 	catalogSlider.innerHTML = '';
 
 	try {
-		const response = await fetch(`${BACKEND_BASE_URL}${CATTLE_LIST_ENDPOINT}`, {
-			method: 'GET',
-			headers: { 'Accept': 'application/json' }
-		});
+		const { data, error } = await supabaseClient
+			.from(CATTLE_TABLE)
+			.select('*')
+			.order('id', { ascending: false });
 
-		if (!response.ok) {
-			throw new Error('Gagal memuat katalog');
-		}
-
-		const payload = await response.json();
-		renderCatalog(payload?.items || []);
+		if (error) throw error;
+		renderCatalog(data || []);
 	} catch (error) {
 		catalogCount.textContent = 'Katalog belum dapat dimuat';
-		catalogSlider.innerHTML = '<article class="catalog-card"><div class="card-content"><p class="card-subtitle">Backend belum aktif atau terjadi kendala jaringan. Coba jalankan server lalu refresh halaman.</p></div></article>';
+		catalogSlider.innerHTML = '<article class="catalog-card"><div class="card-content"><p class="card-subtitle">Data Supabase belum siap atau ada kendala jaringan. Coba refresh beberapa saat lagi.</p></div></article>';
 		console.error('Load katalog gagal:', error);
 	}
 }

@@ -273,6 +273,33 @@ cursor: pointer;
 			padding: 46px 0;
 		}
 
+
+	<script>
+	(() => {
+		const APP_BUILD = '20260711r5';
+		const shouldVersion = (href) => href && (href.startsWith('./') || href.startsWith('../') || href.startsWith('/')) && !href.startsWith('http://') && !href.startsWith('https://') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('javascript:') && !href.startsWith('#');
+		const withVersion = (href) => {
+			try {
+				const url = new URL(href, window.location.href);
+				if (url.origin !== window.location.origin) return href;
+				if (url.searchParams.get('v') === APP_BUILD) return href;
+				url.searchParams.set('v', APP_BUILD);
+				return `${url.pathname}?${url.searchParams.toString()}${url.hash}`;
+			} catch {
+				return href;
+			}
+		};
+		const versionLinks = (root = document) => {
+			root.querySelectorAll('a[href]').forEach((anchor) => {
+				const originalHref = anchor.getAttribute('href');
+				if (!shouldVersion(originalHref)) return;
+				anchor.setAttribute('href', withVersion(originalHref));
+			});
+		};
+		versionLinks();
+		new MutationObserver(() => versionLinks()).observe(document.documentElement, { childList: true, subtree: true });
+	})();
+	</script>
 		.footer-row {
 			display: flex;
 			justify-content: space-between;

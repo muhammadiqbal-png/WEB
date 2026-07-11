@@ -297,6 +297,33 @@ cursor: pointer;
 			padding: 46px 0;
 		}
 
+
+	<script>
+	(() => {
+		const APP_BUILD = '20260711r5';
+		const shouldVersion = (href) => href && (href.startsWith('./') || href.startsWith('../') || href.startsWith('/')) && !href.startsWith('http://') && !href.startsWith('https://') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('javascript:') && !href.startsWith('#');
+		const withVersion = (href) => {
+			try {
+				const url = new URL(href, window.location.href);
+				if (url.origin !== window.location.origin) return href;
+				if (url.searchParams.get('v') === APP_BUILD) return href;
+				url.searchParams.set('v', APP_BUILD);
+				return `${url.pathname}?${url.searchParams.toString()}${url.hash}`;
+			} catch {
+				return href;
+			}
+		};
+		const versionLinks = (root = document) => {
+			root.querySelectorAll('a[href]').forEach((anchor) => {
+				const originalHref = anchor.getAttribute('href');
+				if (!shouldVersion(originalHref)) return;
+				anchor.setAttribute('href', withVersion(originalHref));
+			});
+		};
+		versionLinks();
+		new MutationObserver(() => versionLinks()).observe(document.documentElement, { childList: true, subtree: true });
+	})();
+	</script>
 		.footer-row {
 			display: flex;
 			justify-content: space-between;
@@ -338,7 +365,7 @@ cursor: pointer;
 					<a href="./tentang.html">Tentang Farm</a>
 					<a href="./katalog.html" aria-current="page">Katalog</a>
 					<a href="./kontak.html">Kontak</a>
-						<a href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-001%20Sapi%20Bali%20Betina." target="_blank" rel="noopener noreferrer">WhatsApp Kami</a>
+						<a href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-001%20Sapi%20Bali%20Unggulan." target="_blank" rel="noopener noreferrer">WhatsApp Kami</a>
 </div>
 <button class="menu-button" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="mobile-menu">
 <svg class="menu-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
@@ -351,7 +378,7 @@ cursor: pointer;
 					<a href="./tentang.html">Tentang Farm</a>
 					<a href="./katalog.html" aria-current="page">Katalog</a>
 					<a href="./kontak.html">Kontak</a>
-						<a href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-001%20Sapi%20Bali%20Betina." target="_blank" rel="noopener noreferrer">WhatsApp Kami</a>
+						<a href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20tertarik%20dengan%20SP-001%20Sapi%20Bali%20Unggulan." target="_blank" rel="noopener noreferrer">WhatsApp Kami</a>
 </div>
 </div>
 </nav>
@@ -360,19 +387,19 @@ cursor: pointer;
 			<div class="container hero-grid">
 				<div>
 					<p class="eyebrow">Detail Katalog</p>
-					<h1>SP-001<br><em>Sapi Bali Betina.</em></h1>
+					<h1>SP-001<br><em>Sapi Bali Unggulan.</em></h1>
 				</div>
-				<p class="hero-copy">Sapi Bali betina dengan kondisi sehat, aktif, dan siap dipilih untuk kebutuhan ternak maupun pembelian langsung.</p>
+				<p class="hero-copy">Sapi Bali jantan unggulan dengan kondisi sehat, aktif, dan siap dipilih untuk kebutuhan ternak maupun pembelian langsung.</p>
 			</div>
 		</header>
 
 		<main class="detail-section">
-			<section class="container" aria-label="Detail SP-001 Sapi Bali Betina">
+			<section class="container" aria-label="Detail SP-001 Sapi Bali Unggulan">
 				<div class="detail-grid">
 					<div class="gallery">
 						<div class="main-photo">
-							<img id="main-photo" src="image/sapi2.jpg" alt="SP-001 sapi Bali betina tampak samping">
-							<div class="slide-dots" aria-label="Kontrol foto SP-001 sapi Bali betina">
+							<img id="main-photo" src="image/sapi1.jpg" alt="SP-001 sapi Bali unggulan tampak samping">
+							<div class="slide-dots" aria-label="Kontrol foto SP-001 sapi Bali unggulan">
 								<button class="slide-dot" type="button" aria-label="Tampilkan foto pertama" aria-current="true" data-slide="0"></button>
 								<button class="slide-dot" type="button" aria-label="Tampilkan foto kedua" aria-current="false" data-slide="1"></button>
 							</div>
@@ -383,18 +410,18 @@ cursor: pointer;
 						<div class="price-row">
 							<div class="title-block">
 								<h2>SP-001</h2>
-								<p>Sapi Bali Betina</p>
+								<p>Sapi Bali Unggulan</p>
 							</div>
-							<strong class="price">Rp 18.500.000</strong>
+							<strong class="price">Rp 28.500.000</strong>
 						</div>
 
 						<div class="spec-list">
 							<div class="spec"><span>Kode Sapi</span><strong>SP-001</strong></div>
-							<div class="spec"><span>Jenis Sapi</span><strong>Sapi Bali Betina</strong></div>
-							<div class="spec"><span>Kelamin</span><strong>Betina</strong></div>
-							<div class="spec"><span>Umur</span><strong>± 3 Tahun</strong></div>
-							<div class="spec"><span>Bobot</span><strong>± 250 kg</strong></div>
-							<div class="spec"><span>Warna</span><strong>Cokelat tua kehitaman</strong></div>
+							<div class="spec"><span>Jenis Sapi</span><strong>Sapi Bali Unggulan</strong></div>
+							<div class="spec"><span>Kelamin</span><strong>Jantan</strong></div>
+							<div class="spec"><span>Umur</span><strong>± 3,5 Tahun</strong></div>
+							<div class="spec"><span>Bobot</span><strong>± 420 kg</strong></div>
+							<div class="spec"><span>Warna</span><strong>Cokelat tua</strong></div>
 							<div class="spec"><span>Status</span><strong>Tersedia</strong></div>
 							<div class="spec"><span>Lokasi</span><strong>Samalanga, Bireuen</strong></div>
 						</div>
@@ -402,7 +429,7 @@ cursor: pointer;
 						<p class="description">Kondisi kesehatan: sehat, aktif, nafsu makan baik, tidak terdapat luka atau cacat fisik yang terlihat, bulu bersih, mata jernih, dan tanduk dalam kondisi baik.</p>
 
 						<div class="action-row">
-								<a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20ingin%20reservasi%20SP-001%20Sapi%20Bali%20Betina." target="_blank" rel="noopener noreferrer">Reservasi</a>
+								<a class="primary-button" href="https://wa.me/6283180719216?text=Halo%20suaimi%20livestock%2C%20saya%20ingin%20reservasi%20SP-001%20Sapi%20Bali%20Unggulan." target="_blank" rel="noopener noreferrer">Reservasi</a>
 							<a class="secondary-button" href="./katalog.html">Kembali</a>
 						</div>
 					</aside>

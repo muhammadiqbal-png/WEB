@@ -5,6 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="Dashboard admin Suaimi Livestock.">
 	<meta name="theme-color" content="#9c4f2f">
+	<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+	<meta http-equiv="Pragma" content="no-cache">
 	<title>Dashboard Admin - Suaimi Livestock</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -123,6 +125,19 @@
 			max-width: 760px;
 		}
 
+		.build-badge {
+			display: inline-block;
+			margin-top: 12px;
+			padding: 6px 10px;
+			font-size: 12px;
+			font-weight: 800;
+			letter-spacing: .06em;
+			text-transform: uppercase;
+			color: #fff;
+			background: #2e6b3f;
+			border-radius: 2px;
+		}
+
 		.grid {
 			margin-top: 26px;
 			display: grid;
@@ -192,12 +207,21 @@
 		}
 
 		.field input,
-		.field select {
+		.field select,
+		.field textarea {
 			height: 42px;
 			padding: 0 12px;
 			border: 1px solid var(--border);
 			background: #fff;
 			color: var(--foreground);
+		}
+
+		.field textarea {
+			height: auto;
+			min-height: 96px;
+			padding: 12px;
+			resize: vertical;
+			font: inherit;
 		}
 
 		.form-row {
@@ -231,6 +255,11 @@
 
 		.status-text.error { color: #9f2f2f; }
 		.status-text.success { color: #2e6b3f; }
+
+		.reauth-wrap {
+			margin-top: 10px;
+			display: none;
+		}
 
 		.table-wrap {
 			overflow-x: auto;
@@ -293,7 +322,8 @@
 		<section class="container panel" aria-label="Dashboard admin">
 			<p class="eyebrow">Area Terproteksi</p>
 			<h1>Dashboard Admin</h1>
-			<p class="subtitle">Kelola katalog sapi langsung dari dashboard. Data tersimpan ke database SQLite backend.</p>
+			<p class="build-badge" id="build-badge">Build checking...</p>
+			<p class="subtitle">Kelola katalog sapi langsung dari dashboard. Data tersimpan ke backend Supabase.</p>
 			<div class="dashboard-grid">
 				<section class="management-box" aria-label="Form data sapi">
 					<h2>Form Sapi</h2>
@@ -342,6 +372,10 @@
 							<label for="imageUrl">URL Gambar</label>
 							<input id="imageUrl" name="imageUrl" type="text" placeholder="image/sapi10.jpg">
 						</div>
+						<div class="field">
+							<label for="healthCondition">Kondisi Kesehatan</label>
+							<textarea id="healthCondition" name="healthCondition" placeholder="Contoh: sehat, aktif, nafsu makan baik, bulu bersih, kaki normal."></textarea>
+						</div>
 						<div class="form-actions">
 							<button type="submit" class="btn" id="save-button">Simpan</button>
 							<button type="button" class="btn btn-ghost" id="reset-button">Reset</button>
@@ -371,21 +405,69 @@
 				</section>
 			</div>
 			<p class="user-info" id="user-info">Memuat data akun...</p>
+			<div class="reauth-wrap" id="reauth-wrap">
+				<a class="btn" href="./login.html?state=reauth_required">Login Ulang</a>
+			</div>
 		</section>
 	</main>
 
 	<script src="./auth-config.js"></script>
+	<script src="./supabase.min.js"></script>
 	<script>
-	const BACKEND_BASE_URL = window.AUTH_CONFIG?.BACKEND_BASE_URL || 'http://localhost:3000';
-	const VERIFY_ENDPOINT = window.AUTH_CONFIG?.VERIFY_ENDPOINT || '/api/auth/me';
-	const LOGOUT_ENDPOINT = window.AUTH_CONFIG?.LOGOUT_ENDPOINT || '/api/auth/logout';
-	const CATTLE_LIST_ENDPOINT = window.AUTH_CONFIG?.CATTLE_LIST_ENDPOINT || '/api/cattle';
-	const CATTLE_ADMIN_ENDPOINT = window.AUTH_CONFIG?.CATTLE_ADMIN_ENDPOINT || '/api/admin/cattle';
+	const SUPABASE_URL = window.AUTH_CONFIG?.SUPABASE_URL || 'https://etgnnyigpmmsbwppymsm.supabase.co';
+	const SUPABASE_ANON_KEY = window.AUTH_CONFIG?.SUPABASE_ANON_KEY || 'sb_publishable_XJfL6VDZxULEmsHUKm8xkQ_t4GAY6HH';
+	const CATTLE_TABLE = window.AUTH_CONFIG?.SUPABASE_CATTLE_TABLE || 'cattle';
+	const supabaseClient = (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase?.createClient)
+		? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+		: null;
 	const AUTH_TOKEN_KEY = 'suaimi_auth_token';
 	const AUTH_USER_KEY = 'suaimi_auth_user';
+	const AUTH_SESSION_KEY = 'suaimi_auth_session';
+	const BUILD_ID = '2026-07-11-r5';
 
-	function getStoredToken() {
-		return localStorage.getItem(AUTH_TOKEN_KEY) || sessionStorage.getItem(AUTH_TOKEN_KEY);
+	const buildBadgeEl = document.getElementById('build-badge');
+	if (buildBadgeEl) {
+		buildBadgeEl.textContent = `Build ${BUILD_ID} aktif`;
+	}
+
+	function parseSession(raw) {
+		if (!raw) return null;
+		try {
+			const parsed = JSON.parse(raw);
+			if (!parsed || typeof parsed !== 'object') return null;
+			if (!parsed.access_token || !parsed.refresh_token) return null;
+			return parsed;
+		} catch {
+			return null;
+		}
+	}
+
+	function getSessionCandidates() {
+		const localToken = localStorage.getItem(AUTH_TOKEN_KEY);
+		const sessionToken = sessionStorage.getItem(AUTH_TOKEN_KEY);
+		const localSession = parseSession(localStorage.getItem(AUTH_SESSION_KEY));
+		const sessionSession = parseSession(sessionStorage.getItem(AUTH_SESSION_KEY));
+		const candidates = [];
+
+		if (sessionSession) candidates.push({ type: 'session', value: sessionSession, storage: sessionStorage });
+		if (localSession && (!sessionSession || localSession.access_token !== sessionSession.access_token)) {
+			candidates.push({ type: 'session', value: localSession, storage: localStorage });
+		}
+		if (sessionToken && (!sessionSession || sessionToken !== sessionSession.access_token)) {
+			candidates.push({ type: 'token', value: sessionToken, storage: sessionStorage });
+		}
+		if (localToken && (!localSession || localToken !== localSession.access_token) && localToken !== sessionToken) {
+			candidates.push({ type: 'token', value: localToken, storage: localStorage });
+		}
+
+		return candidates;
+	}
+
+	function getPreferredStorage() {
+		if (localStorage.getItem(AUTH_TOKEN_KEY) || localStorage.getItem(AUTH_SESSION_KEY)) {
+			return localStorage;
+		}
+		return sessionStorage;
 	}
 
 	function getStoredUser() {
@@ -403,37 +485,88 @@
 	function clearAuthStorage() {
 		localStorage.removeItem(AUTH_TOKEN_KEY);
 		localStorage.removeItem(AUTH_USER_KEY);
+		localStorage.removeItem(AUTH_SESSION_KEY);
 		sessionStorage.removeItem(AUTH_TOKEN_KEY);
 		sessionStorage.removeItem(AUTH_USER_KEY);
+		sessionStorage.removeItem(AUTH_SESSION_KEY);
 	}
 
 	function redirectUnauthorized() {
 		clearAuthStorage();
-		window.location.href = './login.html?state=unauthorized';
+		window.location.replace(`./login.html?state=unauthorized&v=${BUILD_ID}`);
 	}
 
-	async function verifyTokenWithBackend(token) {
-		const response = await fetch(`${BACKEND_BASE_URL}${VERIFY_ENDPOINT}`, {
-			method: 'GET',
-			headers: {
-				'Accept': 'application/json',
-				'Authorization': `Bearer ${token}`
+	async function verifyToken(accessToken) {
+		if (!supabaseClient) {
+			if (!window.supabase?.createClient) {
+				throw new Error('Library Supabase gagal dimuat. Coba refresh halaman atau cek koneksi internet/CDN.');
 			}
-		});
-
-		if (!response.ok) {
-			throw new Error('Token invalid atau sesi berakhir');
+			throw new Error('Konfigurasi Supabase belum lengkap.');
 		}
 
-		try {
-			return await response.json();
-		} catch {
-			return null;
+		const { data, error } = await supabaseClient.auth.getUser(accessToken);
+		if (error || !data?.user) {
+			throw new Error('Sesi tidak valid atau sudah berakhir');
 		}
+
+		return data.user;
 	}
 
-	const token = getStoredToken();
-	if (!token) {
+	async function resolveActiveSession() {
+		// Prioritaskan sesi internal Supabase agar refresh token tetap bisa dipakai,
+		// termasuk untuk user yang sempat login dari versi halaman lama.
+		const { data: internalSessionData, error: internalSessionError } = await supabaseClient.auth.getSession();
+		const internalSession = internalSessionData?.session;
+		if (!internalSessionError && internalSession?.access_token) {
+			try {
+				const user = await verifyToken(internalSession.access_token);
+				return {
+					storage: getPreferredStorage(),
+					token: internalSession.access_token,
+					session: internalSession,
+					user
+				};
+			} catch {
+				// Lanjut ke fallback kandidat custom jika sesi internal ternyata sudah invalid.
+			}
+		}
+
+		const candidates = getSessionCandidates();
+		for (const candidate of candidates) {
+			if (candidate.type === 'session') {
+				const { data, error } = await supabaseClient.auth.refreshSession({
+					refresh_token: candidate.value.refresh_token
+				});
+
+				if (!error && data?.session && data?.user) {
+					return {
+						storage: candidate.storage,
+						token: data.session.access_token,
+						session: data.session,
+						user: data.user
+					};
+				}
+			}
+
+			const token = candidate.type === 'token' ? candidate.value : candidate.value.access_token;
+			try {
+				const user = await verifyToken(token);
+				return {
+					storage: candidate.storage,
+					token,
+					session: candidate.type === 'session' ? candidate.value : null,
+					user
+				};
+			} catch {
+				// Lanjut ke kandidat berikutnya.
+			}
+		}
+
+		throw new Error('Sesi tidak valid atau sudah berakhir');
+	}
+
+	const sessionCandidates = getSessionCandidates();
+	if (!sessionCandidates.length) {
 		redirectUnauthorized();
 	}
 
@@ -442,6 +575,7 @@
 	const formStatus = document.getElementById('form-status');
 	const resetButton = document.getElementById('reset-button');
 	const saveButton = document.getElementById('save-button');
+	const reauthWrap = document.getElementById('reauth-wrap');
 
 	function rupiah(value) {
 		return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value || 0);
@@ -461,34 +595,16 @@
 		setFormStatus('Mode tambah data baru.', '');
 	}
 
-	async function fetchWithAuth(url, options) {
-		const response = await fetch(url, {
-			...options,
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${token}`,
-				...(options?.headers || {})
-			}
-		});
-
-		if (response.status === 401) {
-			redirectUnauthorized();
-			throw new Error('Unauthorized');
+	function normalizeImagePath(rawValue) {
+		const value = String(rawValue || '').trim();
+		if (!value) return '';
+		if (value.startsWith('http://') || value.startsWith('https://') || value.startsWith('./') || value.startsWith('../') || value.startsWith('/')) {
+			return value;
 		}
-
-		let payload = null;
-		try {
-			payload = await response.json();
-		} catch {
-			payload = null;
+		if (value.includes('/')) {
+			return value.toLowerCase();
 		}
-
-		if (!response.ok) {
-			throw new Error(payload?.message || 'Request gagal');
-		}
-
-		return payload;
+		return `image/${value.toLowerCase()}`;
 	}
 
 	function renderTable(items) {
@@ -506,7 +622,7 @@
 				<td>${item.code}</td>
 				<td>${item.name}</td>
 				<td>${item.breed} (${item.gender})</td>
-				<td>${item.weight_kg} kg</td>
+				<td>${item.weight_kg || item.weightKg || 0} kg</td>
 				<td>${rupiah(item.price)}</td>
 				<td>${item.status}</td>
 				<td>
@@ -524,8 +640,13 @@
 
 	async function loadCattle() {
 		try {
-			const payload = await fetchWithAuth(`${BACKEND_BASE_URL}${CATTLE_LIST_ENDPOINT}`);
-			cachedItems = payload?.items || [];
+			const { data, error } = await supabaseClient
+				.from(CATTLE_TABLE)
+				.select('*')
+				.order('id', { ascending: false });
+
+			if (error) throw error;
+			cachedItems = data || [];
 			renderTable(cachedItems);
 		} catch (error) {
 			setFormStatus(error.message || 'Gagal memuat data sapi.', 'error');
@@ -539,18 +660,22 @@
 		document.getElementById('breed').value = item.breed || '';
 		document.getElementById('gender').value = item.gender || 'Jantan';
 		document.getElementById('status').value = item.status || 'Tersedia';
-		document.getElementById('weightKg').value = item.weight_kg || '';
+		document.getElementById('weightKg').value = item.weight_kg || item.weightKg || '';
 		document.getElementById('price').value = item.price || '';
-		document.getElementById('imageUrl').value = item.image_url || '';
+		document.getElementById('imageUrl').value = item.image_url || item.imageUrl || '';
+		document.getElementById('healthCondition').value = item.health_condition || item.healthCondition || '';
 		setFormStatus(`Mode ubah untuk ${item.code}.`, '');
 	}
 
 	async function handleDelete(itemId) {
 		if (!confirm('Hapus data sapi ini?')) return;
 		try {
-			await fetchWithAuth(`${BACKEND_BASE_URL}${CATTLE_ADMIN_ENDPOINT}/${itemId}`, {
-				method: 'DELETE'
-			});
+			const { error } = await supabaseClient
+				.from(CATTLE_TABLE)
+				.delete()
+				.eq('id', itemId);
+
+			if (error) throw error;
 			setFormStatus('Data sapi berhasil dihapus.', 'success');
 			await loadCattle();
 			resetForm();
@@ -588,23 +713,27 @@
 			breed: document.getElementById('breed').value.trim(),
 			gender: document.getElementById('gender').value,
 			status: document.getElementById('status').value,
-			weightKg: Number(document.getElementById('weightKg').value || 0),
+			weight_kg: Number(document.getElementById('weightKg').value || 0),
 			price: Number(document.getElementById('price').value || 0),
-			imageUrl: document.getElementById('imageUrl').value.trim()
+			image_url: normalizeImagePath(document.getElementById('imageUrl').value),
+			health_condition: document.getElementById('healthCondition').value.trim()
 		};
 
 		try {
 			if (itemId > 0) {
-				await fetchWithAuth(`${BACKEND_BASE_URL}${CATTLE_ADMIN_ENDPOINT}/${itemId}`, {
-					method: 'PUT',
-					body: JSON.stringify(body)
-				});
+				const { error } = await supabaseClient
+					.from(CATTLE_TABLE)
+					.update(body)
+					.eq('id', itemId);
+
+				if (error) throw error;
 				setFormStatus('Data sapi berhasil diperbarui.', 'success');
 			} else {
-				await fetchWithAuth(`${BACKEND_BASE_URL}${CATTLE_ADMIN_ENDPOINT}`, {
-					method: 'POST',
-					body: JSON.stringify(body)
-				});
+				const { error } = await supabaseClient
+					.from(CATTLE_TABLE)
+					.insert(body);
+
+				if (error) throw error;
 				setFormStatus('Data sapi berhasil ditambahkan.', 'success');
 			}
 
@@ -630,14 +759,24 @@
 
 	(async () => {
 		try {
-			const payload = await verifyTokenWithBackend(token);
-			const backendUser = payload?.user || payload?.data?.user || payload?.data || null;
-			if (backendUser) {
-				const storage = localStorage.getItem(AUTH_TOKEN_KEY) ? localStorage : sessionStorage;
-				storage.setItem(AUTH_USER_KEY, JSON.stringify(backendUser));
+			const active = await resolveActiveSession();
+			if (active.storage === localStorage) {
+				sessionStorage.removeItem(AUTH_TOKEN_KEY);
+				sessionStorage.removeItem(AUTH_USER_KEY);
+				sessionStorage.removeItem(AUTH_SESSION_KEY);
+			} else {
+				localStorage.removeItem(AUTH_TOKEN_KEY);
+				localStorage.removeItem(AUTH_USER_KEY);
+				localStorage.removeItem(AUTH_SESSION_KEY);
 			}
 
-			const activeUser = backendUser || getStoredUser();
+			active.storage.setItem(AUTH_TOKEN_KEY, active.token || '');
+			active.storage.setItem(AUTH_USER_KEY, JSON.stringify(active.user));
+			if (active.session?.refresh_token) {
+				active.storage.setItem(AUTH_SESSION_KEY, JSON.stringify(active.session));
+			}
+
+			const activeUser = active.user || getStoredUser();
 			const displayName = activeUser?.name || activeUser?.username || activeUser?.email || activeUser?.identifier || 'admin';
 			if (userInfoEl) {
 				userInfoEl.textContent = `Login sebagai: ${displayName}`;
@@ -647,30 +786,26 @@
 			loadCattle();
 		} catch (error) {
 			if (userInfoEl) {
-				userInfoEl.textContent = 'Sesi tidak valid atau backend tidak bisa diakses. Mengalihkan ke login...';
+				userInfoEl.textContent = 'Sesi tidak dapat diverifikasi sekarang. Dashboard tetap dibuka, tetapi jika gagal simpan data silakan login ulang.';
 				userInfoEl.classList.add('error');
 			}
+			if (reauthWrap) {
+				reauthWrap.style.display = 'block';
+			}
 			console.error('Verifikasi token gagal:', error);
-			setTimeout(() => {
-				redirectUnauthorized();
-			}, 1000);
+			setFormStatus('Autentikasi sedang bermasalah. Coba login ulang jika aksi simpan/hapus gagal.', 'error');
+			await loadCattle();
 		}
 	})();
 
 	const logoutButton = document.getElementById('logout-button');
 	logoutButton?.addEventListener('click', async () => {
 		try {
-			if (token) {
-				await fetch(`${BACKEND_BASE_URL}${LOGOUT_ENDPOINT}`, {
-					method: 'POST',
-					headers: {
-						'Accept': 'application/json',
-						'Authorization': `Bearer ${token}`
-					}
-				});
+			if (supabaseClient) {
+				await supabaseClient.auth.signOut();
 			}
 		} catch (error) {
-			console.warn('Logout backend gagal, lanjut bersihkan sesi lokal.', error);
+			console.warn('Logout Supabase gagal, lanjut bersihkan sesi lokal.', error);
 		} finally {
 			clearAuthStorage();
 			window.location.href = './login.html?state=logged_out';

@@ -5,6 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="Halaman login admin Suaimi Livestock.">
 	<meta name="theme-color" content="#9c4f2f">
+	<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+	<meta http-equiv="Pragma" content="no-cache">
 	<title>Login - Suaimi Livestock</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -377,6 +379,7 @@
 	</main>
 
 	<script src="./auth-config.js"></script>
+	<script src="./supabase.min.js"></script>
 	<script>
 	const menuButton = document.querySelector('.menu-button');
 	const mobileMenu = document.getElementById('mobile-menu');
@@ -411,10 +414,15 @@
 		if (window.innerWidth > 720) closeMobileMenu();
 	});
 
-	const BACKEND_BASE_URL = window.AUTH_CONFIG?.BACKEND_BASE_URL || 'http://localhost:3000';
-	const LOGIN_ENDPOINT = window.AUTH_CONFIG?.LOGIN_ENDPOINT || '/api/auth/login';
+	const SUPABASE_URL = window.AUTH_CONFIG?.SUPABASE_URL || 'https://etgnnyigpmmsbwppymsm.supabase.co';
+	const SUPABASE_ANON_KEY = window.AUTH_CONFIG?.SUPABASE_ANON_KEY || 'sb_publishable_XJfL6VDZxULEmsHUKm8xkQ_t4GAY6HH';
+	const supabaseClient = (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase?.createClient)
+		? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+		: null;
 	const AUTH_TOKEN_KEY = 'suaimi_auth_token';
 	const AUTH_USER_KEY = 'suaimi_auth_user';
+	const AUTH_SESSION_KEY = 'suaimi_auth_session';
+	const APP_BUILD = '20260711r5';
 
 	const loginForm = document.getElementById('login-form');
 	const loginStatus = document.getElementById('login-status');
@@ -427,16 +435,111 @@
 		if (tone) loginStatus.classList.add(tone);
 	}
 
-	function getErrorMessage(payload) {
-		if (payload && typeof payload === 'object') {
-			if (typeof payload.message === 'string' && payload.message.trim()) return payload.message;
-			if (typeof payload.error === 'string' && payload.error.trim()) return payload.error;
+	function getErrorMessage(error) {
+		if (error && typeof error.message === 'string' && error.message.trim()) {
+			return error.message;
 		}
-		return 'Login gagal. Periksa kredensial Anda dan coba lagi.';
+		return 'Login gagal. Periksa email dan kata sandi Anda lalu coba lagi.';
 	}
 
 	function getStoredToken() {
 		return localStorage.getItem(AUTH_TOKEN_KEY) || sessionStorage.getItem(AUTH_TOKEN_KEY);
+	}
+
+	function clearAuthStorage() {
+		localStorage.removeItem(AUTH_TOKEN_KEY);
+		localStorage.removeItem(AUTH_USER_KEY);
+		localStorage.removeItem(AUTH_SESSION_KEY);
+		sessionStorage.removeItem(AUTH_TOKEN_KEY);
+		sessionStorage.removeItem(AUTH_USER_KEY);
+		sessionStorage.removeItem(AUTH_SESSION_KEY);
+	}
+
+	function parseSession(raw) {
+		if (!raw) return null;
+		try {
+			const parsed = JSON.parse(raw);
+			if (!parsed || typeof parsed !== 'object') return null;
+			if (!parsed.access_token || !parsed.refresh_token) return null;
+			return parsed;
+		} catch {
+			return null;
+		}
+	}
+
+	async function resolveValidSessionCandidate() {
+		if (!supabaseClient) return null;
+
+		const candidates = [];
+		const sessionSession = parseSession(sessionStorage.getItem(AUTH_SESSION_KEY));
+		const localSession = parseSession(localStorage.getItem(AUTH_SESSION_KEY));
+		const sessionToken = sessionStorage.getItem(AUTH_TOKEN_KEY);
+		const localToken = localStorage.getItem(AUTH_TOKEN_KEY);
+
+		if (sessionSession) candidates.push({ type: 'session', value: sessionSession, storage: sessionStorage });
+		if (localSession && (!sessionSession || localSession.access_token !== sessionSession.access_token)) {
+			candidates.push({ type: 'session', value: localSession, storage: localStorage });
+		}
+		if (sessionToken && (!sessionSession || sessionToken !== sessionSession.access_token)) {
+			candidates.push({ type: 'token', value: sessionToken, storage: sessionStorage });
+		}
+		if (localToken && (!localSession || localToken !== localSession.access_token) && localToken !== sessionToken) {
+			candidates.push({ type: 'token', value: localToken, storage: localStorage });
+		}
+
+		for (const candidate of candidates) {
+			if (candidate.type === 'session') {
+				const { data, error } = await supabaseClient.auth.refreshSession({
+					refresh_token: candidate.value.refresh_token
+				});
+
+				if (!error && data?.session && data?.user) {
+					return {
+						storage: candidate.storage,
+						session: data.session,
+						user: data.user
+					};
+				}
+			}
+
+			const token = candidate.type === 'token' ? candidate.value : candidate.value.access_token;
+			const { data, error } = await supabaseClient.auth.getUser(token);
+			if (!error && data?.user) {
+				return {
+					storage: candidate.storage,
+					session: candidate.type === 'session' ? candidate.value : { access_token: token, refresh_token: '' },
+					user: data.user
+				};
+			}
+		}
+
+		return null;
+	}
+
+	async function hasValidSessionToken() {
+		const resolved = await resolveValidSessionCandidate();
+		if (!resolved) {
+			clearAuthStorage();
+			return false;
+		}
+
+		if (resolved.storage === localStorage) {
+			sessionStorage.removeItem(AUTH_TOKEN_KEY);
+			sessionStorage.removeItem(AUTH_USER_KEY);
+			sessionStorage.removeItem(AUTH_SESSION_KEY);
+		} else {
+			localStorage.removeItem(AUTH_TOKEN_KEY);
+			localStorage.removeItem(AUTH_USER_KEY);
+			localStorage.removeItem(AUTH_SESSION_KEY);
+		}
+
+		resolved.storage.setItem(AUTH_TOKEN_KEY, resolved.session.access_token || '');
+		resolved.storage.setItem(AUTH_USER_KEY, JSON.stringify(resolved.user));
+		if (resolved.session.refresh_token) {
+			resolved.storage.setItem(AUTH_SESSION_KEY, JSON.stringify(resolved.session));
+		}
+
+		return true;
 	}
 
 	const queryState = new URLSearchParams(window.location.search).get('state');
@@ -446,12 +549,25 @@
 		setStatus('Anda berhasil logout.', 'success');
 	}
 
-	if (getStoredToken()) {
-		window.location.href = './admin.html';
-	}
+	(async () => {
+		if (!getStoredToken()) return;
+		const valid = await hasValidSessionToken();
+		if (valid) {
+			window.location.replace(`./admin.html?v=${APP_BUILD}`);
+		}
+	})();
 
 	loginForm?.addEventListener('submit', async (event) => {
 		event.preventDefault();
+
+		if (!supabaseClient) {
+			if (!window.supabase?.createClient) {
+				setStatus('Library Supabase gagal dimuat. Coba refresh halaman atau cek koneksi internet/CDN.', 'error');
+			} else {
+				setStatus('Konfigurasi Supabase belum lengkap di auth-config.js.', 'error');
+			}
+			return;
+		}
 
 		const formData = new FormData(loginForm);
 		const identifier = String(formData.get('identifier') || '').trim();
@@ -459,7 +575,12 @@
 		const remember = Boolean(formData.get('remember'));
 
 		if (!identifier || !password) {
-			setStatus('Username/email dan kata sandi wajib diisi.', 'error');
+			setStatus('Email dan kata sandi wajib diisi.', 'error');
+			return;
+		}
+
+		if (!identifier.includes('@')) {
+			setStatus('Masukkan email akun Supabase yang valid.', 'error');
 			return;
 		}
 
@@ -467,48 +588,37 @@
 		setStatus('Memproses login...', '');
 
 		try {
-			const response = await fetch(`${BACKEND_BASE_URL}${LOGIN_ENDPOINT}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'Accept': 'application/json'
-				},
-				body: JSON.stringify({
-					identifier,
-					username: identifier,
-					email: identifier,
-					password
-				})
+			const { data, error } = await supabaseClient.auth.signInWithPassword({
+				email: identifier,
+				password
 			});
 
-			let payload = null;
-			try {
-				payload = await response.json();
-			} catch {
-				payload = null;
-			}
-
-			if (!response.ok) {
-				setStatus(getErrorMessage(payload), 'error');
+			if (error) {
+				setStatus(getErrorMessage(error), 'error');
 				return;
 			}
 
-			const token = payload?.token || payload?.accessToken || payload?.data?.token;
-			if (!token) {
-				setStatus('Login berhasil, tetapi token tidak ditemukan pada respons backend.', 'error');
+			const session = data?.session;
+			const user = data?.user;
+			const token = session?.access_token;
+
+			if (!token || !user) {
+				setStatus('Login belum berhasil. Coba lagi beberapa saat.', 'error');
 				return;
 			}
 
+			clearAuthStorage();
 			const storage = remember ? localStorage : sessionStorage;
 			storage.setItem(AUTH_TOKEN_KEY, token);
-			storage.setItem(AUTH_USER_KEY, JSON.stringify(payload?.user || { identifier }));
+			storage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+			storage.setItem(AUTH_SESSION_KEY, JSON.stringify(session));
 
 			setStatus('Login berhasil. Mengalihkan ke dashboard...', 'success');
 			setTimeout(() => {
-				window.location.href = './admin.html';
+				window.location.replace(`./admin.html?v=${APP_BUILD}`);
 			}, 900);
 		} catch (error) {
-			setStatus('Tidak dapat terhubung ke backend. Pastikan server berjalan.', 'error');
+			setStatus('Tidak dapat terhubung ke Supabase. Periksa koneksi internet.', 'error');
 			console.error('Login error:', error);
 		} finally {
 			loginSubmit?.removeAttribute('disabled');
